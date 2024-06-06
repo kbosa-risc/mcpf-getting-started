@@ -1,0 +1,12 @@
+input_path: 'c:\_Projects\_he_metafacturing\he_metafacturing\data\input_csv\*.tar.gz'
+output_path: 'c:\_Projects\_he_metafacturing\he_metafacturing\data\FRO\'
+tmp_paths:
+  - 'c:\_Projects\_he_metafacturing\he_metafacturing\data\output\'
+imports:
+  - io_functions
+  - transformation_functions
+pipeline:
+  - unzip
+  - read_all_csv_files
+  - compose_file_name
+  - write_parquet
