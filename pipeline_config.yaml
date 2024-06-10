@@ -1,12 +1,32 @@
-input_path: 'c:\_Projects\_he_metafacturing\he_metafacturing\data\input_csv\*.tar.gz'
-output_path: 'c:\_Projects\_he_metafacturing\he_metafacturing\data\FRO\'
+input_path: 'c:\Projects\he_meta\data\input_files\'
+output_path: 'c:\Projects\he_meta\data\parquet_files\'
+input_file_name: '*.tar.gz'
+entry_point: 'unzip_p'
 tmp_paths:
-  - 'c:\_Projects\_he_metafacturing\he_metafacturing\data\output\'
+  - 'c:\Projects\he_meta\data\csv_files\'
 imports:
   - io_functions
   - transformation_functions
-pipeline:
-  - unzip
-  - read_all_csv_files
-  - compose_file_name
-  - write_parquet
+pipelines:
+  - unzip_p:
+    - unzip_all: ~                    # a pipeline can contain python functions
+    - loop_processing_all: print_p    # the prefix loop is a keyword
+
+
+    print_p:
+      - print_all: ~
+
+    resample_p:
+      - read_input_data_p: ~          # a pipeline can contain other pipelines
+      - transformation_p: ~
+      - write_parquet_p: ~
+
+    read_input_data_p:
+      - read_all_csv_files: ~
+
+    write_parquet_p:
+      - compose_file_name: ~
+      - write_to_parquet: ~
+
+    transformation_p:
+      - merging_columns: ~
