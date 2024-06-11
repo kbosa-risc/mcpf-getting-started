@@ -20,6 +20,7 @@ import sys
 dept_of_nested_loops = 0
 current_max_dept_of_nested_loops = 0
 loop_kernel_pipelines = []    # it contains the child pipeline of loops in the order of execution
+max_dept = 0
 
 @dataclass
 class PipelineConfig:
@@ -85,6 +86,7 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
 
 def validate_pipeline(config: PipelineConfig, current_pipeline: str, modules: dict) -> list:
     global loop_kernel_pipelines
+    global max_dept
     # preparing available building blocks
     this_module = sys.modules[__name__]
     available_functions = {}
@@ -96,14 +98,14 @@ def validate_pipeline(config: PipelineConfig, current_pipeline: str, modules: di
     for func_const in config.pipelines[0][current_pipeline]:
         for func in func_const:
             if func[:len(constants.ARG_KEYWORD_LOOP)] == constants.ARG_KEYWORD_LOOP:
-                child_pipeline = validate_pipeline(config, func_const[func], modules)
-                f = getattr(this_module, 'init_iterator')
-                child_pipeline.insert(0, f)
+                child_pipeline = [init_iterator]
                 loop_kernel_pipelines.append(child_pipeline)
                 pipeline.append(loop_interpreter)
-            elif func in config.pipelines:
-                child_pipeline = validate_pipeline(config, func, modules)
-                pipeline.extend(child_pipeline)
+                child_pipeline.extend(validate_pipeline(config, func_const[func], modules))
+                # f = getattr(this_module, 'init_iterator')
+            elif func in config.pipelines[0]:
+                sub_pipeline = validate_pipeline(config, func, modules)
+                pipeline.extend(sub_pipeline.copy())
             else:
                 not_found = True
                 for module in available_functions:

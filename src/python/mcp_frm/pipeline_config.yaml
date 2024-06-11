@@ -5,28 +5,30 @@ entry_point: 'unzip_p'
 tmp_paths:
   - 'c:\Projects\he_meta\data\csv_files\'
 imports:
-  - io_functions
-  - transformation_functions
+  - mcp_use_case_fronius.io_functions
+  - mcp_use_case_fronius.transformation_functions
 pipelines:
   - unzip_p:
-    - unzip_all: ~                    # a pipeline can contain python functions
-    - loop_processing_all: print_p    # the prefix loop is a keyword
-
+      - unzip_all: ~                    # a pipeline can contain python functions
+      - loop_processing_all_dir: processing_dirs_p    # the prefix loop is a keyword
 
     print_p:
       - print_all: ~
 
+    processing_dirs_p:
+      - determine_end_date_from_filename: ~
+      - loop_processing_csvs: read_input_data_p
+      - resample_p: ~
+
     resample_p:
-      - read_input_data_p: ~          # a pipeline can contain other pipelines
-      - transformation_p: ~
-      - write_parquet_p: ~
+    - transformation_p: ~       # a pipeline can contain other pipelines
+    - write_output_p: ~
 
     read_input_data_p:
-      - read_all_csv_files: ~
+    - read_csv_file: ~
 
-    write_parquet_p:
-      - compose_file_name: ~
-      - write_to_parquet: ~
+    write_output_p:
+    - write_to_parquet: ~
 
     transformation_p:
-      - merging_columns: ~
+    - merging_columns: ~

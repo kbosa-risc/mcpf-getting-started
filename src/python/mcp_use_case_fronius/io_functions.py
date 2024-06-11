@@ -1,38 +1,33 @@
 import pandas as pd
 from typing import Any
 import os
-import constants
-import pipeline_routines as routines
+import mcp_frm.pipeline_routines as routines
 import tarfile
+from datetime import datetime, timedelta, timezone
+from utils.conf import Formats, Paths_FRO
+import pyarrow.parquet as pq
+import pyarrow as pa
 
 
-def get_current_input_dir(meta: dict[str, Any], data: dict[str, Any]) -> str:
-    index_of_dirs = meta[constants.TMP_PATH_INDEX]
-    if constants.ARG_KEYWORD_ITERATOR in data:
-        input_dir = meta[constants.TMP_PATHS][index_of_dirs] + data.pop(constants.ARG_KEYWORD_ITERATOR)
-    else:
-        input_dir = meta[constants.TMP_PATHS][index_of_dirs]
-    return input_dir
+def check_sample_rate_quantile(df: pd.DataFrame, time_column: str = "timestamp"):
+    quantile = 0.95
+    # Ensure the df is sorted by the timestamp column
+    df = df.sort_values(by=time_column)
 
+    # Calculate the time difference between consecutive timestamps
+    time_diff = df[time_column].diff()
 
-def get_current_output_dir(meta: dict[str, Any]) -> str:
-    index_of_dirs = increment_tmp_dir_index(meta)
-    output_dir = meta[constants.TMP_PATHS][index_of_dirs]
-    return output_dir
+    # Calculate the quantile of time differences
+    quantile_value = time_diff.quantile(quantile)
 
-
-def increment_tmp_dir_index(meta: dict[str, Any]) -> int:
-    index_of_dirs = meta[constants.TMP_PATH_INDEX]
-    if len(meta[constants.TMP_PATHS]) - 1 > index_of_dirs:
-        index_of_dirs += 1
-    return index_of_dirs
+    return quantile_value
 
 
 def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
+    iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
-    input_dir = get_current_input_dir(meta, data)
-    output_dir = get_current_output_dir(meta)
-    meta[constants.TMP_PATH_INDEX] = increment_tmp_dir_index(meta)
+    input_dir = routines.get_current_input_dir(meta)
+    output_dir = routines.get_current_output_dir(meta)
 
     if len(os.listdir(input_dir)) != 0:
         for file in os.listdir(input_dir):
@@ -46,20 +41,56 @@ def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
 
     data['dirs_of_csvs'] = list(os.listdir(output_dir))
     routines.register_loop_iterator_list(data, 'dirs_of_csvs')
+    routines.set_current_output_dir_to_input_dir(meta)
     routines.set_meta_in_data(data, meta)
     return data
 
 
-def read_all_csv_files(data: dict[str, Any]) -> dict[str, Any]:
+def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
+    iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
-    input_dir = get_current_input_dir(meta, data)
+    input_dir = routines.get_current_input_dir(meta)
+    date_str = iterator.replace("Archive_", "").replace("-csv", "")
+    meta['end_date'] = date_str
+    meta['current_csv_folder'] = iterator
+    data['csv_files'] = os.listdir(input_dir + iterator)
+    data['sample_rate_dict'] = {"name": [], "df": [], "srate": []}
+    routines.register_loop_iterator_list(data, 'csv_files')
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
+def read_csv_file(data: dict[str, Any]) -> dict[str, Any]:
+    file = routines.pop_loop_iterator(data)
+    meta = routines.get_meta_data(data)
+    input_dir = routines.get_current_input_dir(meta) + meta['current_csv_folder']
+
+    if file.__contains__(".csv"):
+        filename = file.replace(".csv", "")
+        temp_df = pd.read_csv(input_dir + '/' + file, usecols=["time", "value"], delimiter=";")
+        temp_df = temp_df.rename(columns={"value": filename})
+        data['sample_rate_dict']["name"].append(filename)
+        data['sample_rate_dict']["df"].append(temp_df)
+        data['sample_rate_dict']["srate"].append(check_sample_rate_quantile(temp_df, "time"))
+
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
+def write_to_parquet(data: dict[str, Any]) -> dict[str, Any]:
+    iterator = routines.pop_loop_iterator(data)
+    meta = routines.get_meta_data(data)
+    output_dir = routines.get_current_output_dir(meta)
+    pq.write_table(pa.Table.from_pandas(data['main_df']), output_dir + '/' + (meta['current_csv_folder'].replace("-csv", "") + ".parquet"))
+
     routines.set_meta_in_data(data, meta)
     return data
 
 
 def print_all(data: dict[str, Any]) -> dict[str, Any]:
+    iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
-    input_dir = get_current_input_dir(meta, data)
+    input_dir = routines.get_current_input_dir(meta)
     for file in os.listdir(input_dir):
         print(file)
     routines.set_meta_in_data(data, meta)
