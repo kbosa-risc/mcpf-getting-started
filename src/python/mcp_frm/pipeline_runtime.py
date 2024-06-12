@@ -14,6 +14,7 @@ from toolz import pipe
 import importlib
 import pandas as pd
 import constants
+import pipeline_routines as routines
 import sys
 
 
@@ -30,23 +31,42 @@ class PipelineConfig:
     entry_point: str
     imports: list[str]
     pipelines: list[dict[str, list[dict[str, str]]]]
+    pipeline_extension: list[dict[str, list[dict[str, str]]]]
     tmp_paths: list[str] = None
     command_line_args: Optional[str] = None
 
 
-def load_pipeline_config() -> PipelineConfig:
+def load_pipeline_config(argv: list[str]) -> PipelineConfig:
     # set the environment variable with a prefix
-    return lasagna.build(
-        PipelineConfig,
-        [
-            layer.YamlLayer(Path("pipeline_config.yaml")),
-            layer.DataClassDefaultLayer(
-                PipelineConfig(
-                    '.', '.', '', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], ['.']
-                )
-            ),
-        ],
-    )
+    if len(argv) == 1:
+        return lasagna.build(
+            PipelineConfig,
+            [
+                layer.DataClassDefaultLayer(
+                    PipelineConfig(
+                        '.', '.', '', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], [], ['.']
+                    )
+                ),
+            ],
+        )
+    else:
+        converted_list = map(Path, argv[1:])
+        yaml_layers = map(layer.YamlLayer, converted_list)
+        l_config = lasagna.build(
+            PipelineConfig,
+            [
+                *yaml_layers,
+                layer.DataClassDefaultLayer(
+                    PipelineConfig(
+                        '.', '.', '', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], [], ['.']
+                    )
+                ),
+            ]
+        )
+        if len(l_config.pipeline_extension) > 0:
+            for key in l_config.pipeline_extension[0]:
+                l_config.pipelines[0][key] = l_config.pipeline_extension[0][key]
+        return l_config
 
 
 def increment_dept_of_nested_loops():
@@ -76,6 +96,7 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
         while len(data[name_of_list_of_loop_iterators]) > 0:
             data = pipe(data, *kernel)
 
+        routines.pop_loop_iterator(data)   # it is needed just in that case if no one used up the iterator
         del data[name_of_list_of_loop_iterators]
         del data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
         dept_of_nested_loops -= 1
@@ -133,7 +154,7 @@ def run_pipeline(config: PipelineConfig, pipeline: list) -> (str, dict[str, pd.D
 
 
 if __name__ == "__main__":
-    c = load_pipeline_config()
+    c = load_pipeline_config(sys.argv)
     if not c.imports or not c.pipelines or not c.entry_point:
         raise NotImplementedError("Error: Missing 'imports', 'pipeline' or 'entry_point' in the config file.")
     else:

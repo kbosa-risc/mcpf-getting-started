@@ -1,5 +1,5 @@
-input_path: 'c:\Projects\he_meta\data\input_files\'
-output_path: 'c:\Projects\he_meta\data\parquet_files\'
+input_path: 'c:\Projects\risc_dse\data\input_files\'
+output_path: 'c:\Projects\risc_dse\data\parquet_files\'
 input_file_name: '*.tar.gz'
 entry_point: 'unzip_p'
 tmp_paths:
@@ -9,16 +9,17 @@ imports:
   - mcp_use_case_fronius.transformation_functions
 pipelines:
   - unzip_p:
-      - unzip_all: ~                    # a pipeline can contain python functions
-      - loop_processing_all_dir: processing_dirs_p    # the prefix loop is a keyword
+    - unzip_all: ~                    # a pipeline can contain python functions
+    - loop_processing_all_dir: processing_dirs_p    # the prefix loop is a keyword
 
     print_p:
-      - print_all: ~
+    - print_all: ~
 
     processing_dirs_p:
-      - determine_end_date_from_filename: ~
-      - loop_processing_csvs: read_input_data_p
-      - resample_p: ~
+    - determine_end_date_from_filename: ~
+    - determine_output_filename: ~
+    - loop_processing_csvs: read_input_data_p
+    - resample_p: ~
 
     resample_p:
     - transformation_p: ~       # a pipeline can contain other pipelines

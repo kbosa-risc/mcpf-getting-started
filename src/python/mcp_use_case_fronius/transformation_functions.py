@@ -36,7 +36,6 @@ def resample_df(df: pd.DataFrame, index_value: str, frequency: float) -> pd.Data
 
 
 def merging_columns(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)   # code change
     meta = routines.get_meta_data(data)  # code change
     end_date = datetime.strptime(meta['end_date'], Formats.date_time_format_in_CSVs).replace(tzinfo=timezone.utc)  # code change
 

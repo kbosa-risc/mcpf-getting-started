@@ -1,0 +1,79 @@
+[tool.pytest.ini_options]
+pythonpath = [
+    ".",
+]
+testpaths = [
+    ".",
+    "test",
+]
+# ignore any of these paths
+norecursedirs = [
+
+]
+
+[tool.poetry]
+name = "mcp_frm"
+version = "0.0.0"
+description = "minimalist_configurable_piplelineing_framework"
+authors = [
+    "Karoly Bosa <karoly.bosa@risc-software.at>"
+]
+
+
+[[tool.poetry.source]]
+name = "risc-pypi"
+url = "https://pypiserver.risc-software.at/simple/"
+default = false
+secondary = false
+
+
+[tool.poetry.dependencies]
+python = "~3.10"
+pandas = "^1.5.2"
+numpy = "^1.24.1"
+pyarrow = "^10.0.1"
+h5py = "^3.8.0"
+dataprep = "^0.4.5"
+poethepoet = "^0.19.0"
+black = {extras = ["jupyter"], version = "^23.3.0"}
+scipy = "^1.11.4"
+lasagna = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+pytest-xdist = "^3.1.0"
+black = "^23.1.0"
+isort = "^5.12.0"
+ruff = "^0.0.259"
+
+[tool.ruff]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.poe.tasks]
+_format = "black ."
+_sort_imports = "isort ."
+_lint = "ruff check --fix ."
+
+_check_format = "black --check ."
+_check_sort_imports = "isort --check ."
+_check_lint = "ruff check ."
+
+docs = "mkdocs serve"
+precommit = ["_format", "_sort_imports", "_lint"]
+check = ["_check_format", "_check_sort_imports", "_check_lint"]
+test = "pytest"
+
+# https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core>=1.1.14"]
+build-backend = "poetry.core.masonry.api"
+
+
+

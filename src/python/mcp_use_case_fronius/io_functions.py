@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 from utils.conf import Formats, Paths_FRO
 import pyarrow.parquet as pq
 import pyarrow as pa
+import math
 
 
 def check_sample_rate_quantile(df: pd.DataFrame, time_column: str = "timestamp"):
@@ -50,12 +51,50 @@ def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
     iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
     input_dir = routines.get_current_input_dir(meta)
-    date_str = iterator.replace("Archive_", "").replace("-csv", "")
+    date_str = iterator.replace("Archive_", "").replace("-csv", "").replace("-parquet", "")
     meta['end_date'] = date_str
-    meta['current_csv_folder'] = iterator
-    data['csv_files'] = os.listdir(input_dir + iterator)
+    meta['current_folder'] = iterator
+    data['files'] = os.listdir(input_dir + iterator)
     data['sample_rate_dict'] = {"name": [], "df": [], "srate": []}
-    routines.register_loop_iterator_list(data, 'csv_files')
+    routines.register_loop_iterator_list(data, 'files')
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
+def determine_output_filename(data: dict[str, Any]) -> dict[str, Any]:
+    meta = routines.get_meta_data(data)
+    meta['output_file_name'] = meta['current_folder'].replace("-csv", "").replace("-parquet", "") + ".parquet"
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
+def read_parquet_file(data: dict[str, Any]) -> dict[str, Any]:
+    file = routines.pop_loop_iterator(data)
+    meta = routines.get_meta_data(data)
+
+    tmp_path = routines.get_current_input_dir(meta) + meta['current_folder']
+
+    if file.__contains__(".parquet"):
+        table = pq.read_table(tmp_path + '/' + file)
+        df = table.to_pandas()
+        if file.__contains__("10khz"):
+            cutTailSize = 0
+            while df["time"].iloc[cutTailSize - 1] != math.floor(df["time"].iloc[cutTailSize - 1] * 1000) / 1000:
+                cutTailSize -= 1
+            if cutTailSize < 0:
+                df = df.iloc[:cutTailSize]
+
+        df_timestamp = pd.DataFrame()
+        for nr, column_name in enumerate(df.columns):
+            if nr == 0:
+                df_timestamp[column_name] = df[column_name].astype("float64")
+            else:
+                temp_df = df_timestamp.copy()
+                temp_df[column_name] = df[column_name]
+                data['sample_rate_dict']["name"].append(column_name)
+                data['sample_rate_dict']["df"].append(temp_df)
+                data['sample_rate_dict']["srate"].append(check_sample_rate_quantile(temp_df, "time"))
+
     routines.set_meta_in_data(data, meta)
     return data
 
@@ -63,7 +102,7 @@ def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
 def read_csv_file(data: dict[str, Any]) -> dict[str, Any]:
     file = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
-    input_dir = routines.get_current_input_dir(meta) + meta['current_csv_folder']
+    input_dir = routines.get_current_input_dir(meta) + meta['current_folder']
 
     if file.__contains__(".csv"):
         filename = file.replace(".csv", "")
@@ -78,10 +117,9 @@ def read_csv_file(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def write_to_parquet(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
     output_dir = routines.get_current_output_dir(meta)
-    pq.write_table(pa.Table.from_pandas(data['main_df']), output_dir + '/' + (meta['current_csv_folder'].replace("-csv", "") + ".parquet"))
+    pq.write_table(pa.Table.from_pandas(data['main_df']), output_dir + '/' + meta['output_file_name'])
 
     routines.set_meta_in_data(data, meta)
     return data
@@ -91,7 +129,7 @@ def print_all(data: dict[str, Any]) -> dict[str, Any]:
     iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
     input_dir = routines.get_current_input_dir(meta)
-    for file in os.listdir(input_dir):
+    for file in os.listdir(input_dir + '/' + iterator):
         print(file)
     routines.set_meta_in_data(data, meta)
     return data
