@@ -40,8 +40,8 @@ def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
             # Close the tar file
             tar.close()
 
-    data['dirs_of_csvs'] = list(os.listdir(output_dir))
-    routines.register_loop_iterator_list(data, 'dirs_of_csvs')
+    data['dirs_of_input_files'] = list(os.listdir(output_dir))
+    routines.register_loop_iterator_list(data, 'dirs_of_input_files')
     routines.set_current_output_dir_to_input_dir(meta)
     routines.set_meta_in_data(data, meta)
     return data

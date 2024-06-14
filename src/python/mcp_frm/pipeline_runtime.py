@@ -3,7 +3,7 @@
 # more and embedded loops (list of loop list and iterator list)
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import lasagna
@@ -32,8 +32,8 @@ class PipelineConfig:
     imports: list[str]
     pipelines: list[dict[str, list[dict[str, str]]]]
     pipeline_extension: list[dict[str, list[dict[str, str]]]]
-    tmp_paths: list[str] = None
-    command_line_args: Optional[str] = None
+    tmp_paths: list[str] = field(default=None)
+    further_configuration: Optional[list[dict[str, str]]] = field(default=None)
 
 
 def load_pipeline_config(argv: list[str]) -> PipelineConfig:
@@ -63,9 +63,20 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
                 ),
             ]
         )
+        first_element = True
+        for sub_pipeline in l_config.pipelines:
+            if first_element:
+                first_element = False
+            else:
+                for key in sub_pipeline:
+                    l_config.pipelines[0][key] = sub_pipeline[key]
+
+        del l_config.pipelines[1:]
+
         if len(l_config.pipeline_extension) > 0:
-            for key in l_config.pipeline_extension[0]:
-                l_config.pipelines[0][key] = l_config.pipeline_extension[0][key]
+            for extension_element in l_config.pipeline_extension:
+                for key in extension_element:
+                    l_config.pipelines[0][key] = extension_element[key]
         return l_config
 
 
@@ -145,8 +156,10 @@ def run_pipeline(config: PipelineConfig, pipeline: list) -> (str, dict[str, pd.D
     config.tmp_paths.append(config.output_path)
     meta = {constants.TMP_PATH_INDEX : 0}
     meta[constants.TMP_PATHS] = config.tmp_paths
-    if config.command_line_args:
-        meta[constants.COMMAND_LINE_ARGS] = config.command_line_args
+    if config.further_configuration:
+        for key_value_pair in config.further_configuration:
+            for key in key_value_pair:
+                meta[key] = key_value_pair[key]
     json_meta = json.dumps(meta)
     data = {constants.ARG_KEYWORD_META: json_meta, constants.ARG_KEYWORD_LOOP: []}
     retval = pipe(data, *pipeline)
