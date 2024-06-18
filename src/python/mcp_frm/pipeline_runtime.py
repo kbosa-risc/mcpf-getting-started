@@ -15,23 +15,24 @@ import importlib
 import pandas as pd
 import constants
 import pipeline_routines as routines
+import pipeline_singletons as singletons
 import sys
 
 
 dept_of_nested_loops = 0
 current_max_dept_of_nested_loops = 0
 loop_kernel_pipelines = []    # it contains the child pipeline of loops in the order of execution
-max_dept = 0
+
 
 @dataclass
 class PipelineConfig:
     input_path: str
     output_path: str
-    input_file_name: str
     entry_point: str
     imports: list[str]
     pipelines: list[dict[str, list[dict[str, str]]]]
-    pipeline_extension: list[dict[str, list[dict[str, str]]]]
+    input_file_name: str = field(default=None)
+    pipeline_extension: list[dict[str, list[dict[str, str]]]] = field(default=None)
     tmp_paths: list[str] = field(default=None)
     further_configuration: Optional[list[dict[str, str]]] = field(default=None)
 
@@ -44,7 +45,7 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
             [
                 layer.DataClassDefaultLayer(
                     PipelineConfig(
-                        '.', '.', '', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], [], ['.']
+                        '.', '.', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}]
                     )
                 ),
             ],
@@ -89,7 +90,7 @@ def increment_dept_of_nested_loops():
 
 
 def init_iterator(data: dict[str, Any]) -> dict[str, Any]:
-    global  dept_of_nested_loops
+    global dept_of_nested_loops
     name_of_list_of_loop_iterators = data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
     iterator = data[name_of_list_of_loop_iterators].pop(0)
     data[constants.ARG_KEYWORD_ITERATOR] = iterator
@@ -100,27 +101,35 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
     global dept_of_nested_loops
     global current_max_dept_of_nested_loops
     global loop_kernel_pipelines
+    param_singleton = singletons.Arguments()
     if len(loop_kernel_pipelines) > 0:
         increment_dept_of_nested_loops()
         kernel = loop_kernel_pipelines[dept_of_nested_loops - 1]
         name_of_list_of_loop_iterators = data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
+        param_singleton.replace_current_argument_lists()
         while len(data[name_of_list_of_loop_iterators]) > 0:
             data = pipe(data, *kernel)
-
+            param_singleton.renew_loop_argument_lists()
+        param_singleton.restore_last_buffered_argument_list()
         routines.pop_loop_iterator(data)   # it is needed just in that case if no one used up the iterator
         del data[name_of_list_of_loop_iterators]
         del data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
         dept_of_nested_loops -= 1
         if dept_of_nested_loops == 0:
             del loop_kernel_pipelines[:current_max_dept_of_nested_loops]
+            current_max_dept_of_nested_loops = 0
     return data
 
 
-def validate_pipeline(config: PipelineConfig, current_pipeline: str, modules: dict) -> list:
+def validate_pipeline(
+            config: PipelineConfig,
+            current_pipeline: str,
+            modules: dict,
+            current_param_lists: list,
+            param_lists_of_loops: list[list]) -> list:
     global loop_kernel_pipelines
-    global max_dept
     # preparing available building blocks
-    this_module = sys.modules[__name__]
+    # this_module = sys.modules[__name__]
     available_functions = {}
     for module in modules:
         function_list = dir(modules[module])
@@ -131,12 +140,19 @@ def validate_pipeline(config: PipelineConfig, current_pipeline: str, modules: di
         for func in func_const:
             if func[:len(constants.ARG_KEYWORD_LOOP)] == constants.ARG_KEYWORD_LOOP:
                 child_pipeline = [init_iterator]
+                kernel_arguments_lists = []
+                param_lists_of_loops.append(kernel_arguments_lists)
                 loop_kernel_pipelines.append(child_pipeline)
                 pipeline.append(loop_interpreter)
-                child_pipeline.extend(validate_pipeline(config, func_const[func], modules))
+                child_pipeline.extend(validate_pipeline(
+                        config,
+                        func_const[func],
+                        modules,
+                        kernel_arguments_lists,
+                        param_lists_of_loops))
                 # f = getattr(this_module, 'init_iterator')
             elif func in config.pipelines[0]:
-                sub_pipeline = validate_pipeline(config, func, modules)
+                sub_pipeline = validate_pipeline(config, func, modules, current_param_lists, param_lists_of_loops)
                 pipeline.extend(sub_pipeline.copy())
             else:
                 not_found = True
@@ -144,6 +160,7 @@ def validate_pipeline(config: PipelineConfig, current_pipeline: str, modules: di
                     if func in available_functions[module]:
                         f = getattr(modules[module], func)
                         pipeline.append(f)
+                        current_param_lists.append(func_const)
                         not_found = False
                         break
                 if not_found:
@@ -151,7 +168,7 @@ def validate_pipeline(config: PipelineConfig, current_pipeline: str, modules: di
     return pipeline
 
 
-def run_pipeline(config: PipelineConfig, pipeline: list) -> (str, dict[str, pd.DataFrame]):
+def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: list) -> (str, dict[str, pd.DataFrame]):
     config.tmp_paths.insert(0, config.input_path)
     config.tmp_paths.append(config.output_path)
     meta = {constants.TMP_PATH_INDEX : 0}
@@ -161,7 +178,9 @@ def run_pipeline(config: PipelineConfig, pipeline: list) -> (str, dict[str, pd.D
             for key in key_value_pair:
                 meta[key] = key_value_pair[key]
     json_meta = json.dumps(meta)
-    data = {constants.ARG_KEYWORD_META: json_meta, constants.ARG_KEYWORD_LOOP: []}
+    data = {constants.ARG_KEYWORD_LOOP: []}
+    data[constants.ARG_KEYWORD_META] = json_meta
+    data[constants.ARG_KEYWORD_ARGUMENTS] = current_param_lists
     retval = pipe(data, *pipeline)
     return 0
 
@@ -176,5 +195,10 @@ if __name__ == "__main__":
             i = importlib.import_module(module_name)
             imported_modules[module_name] = i
 
-        pipeline_string = validate_pipeline(c, c.entry_point, imported_modules)
-        run_pipeline(c, pipeline_string)
+        param_lists = []
+        arguments_of_sub_pipelines = []
+        pipeline_string = validate_pipeline(c, c.entry_point, imported_modules, param_lists, arguments_of_sub_pipelines)
+        p = singletons.Arguments()
+        p.current_param_lists = param_lists
+        p.param_lists_of_loops = arguments_of_sub_pipelines
+        run_pipeline(c, pipeline_string, param_lists)

@@ -1,6 +1,9 @@
 from typing import Any
 import constants
 import json
+import pipeline_singletons as singleton
+import inspect
+import sys
 
 
 def get_meta_data(data: dict[str, Any]) -> dict[str, Any]:
@@ -8,10 +11,14 @@ def get_meta_data(data: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("Error! No metadata in the arguments")
     json_meta = data[constants.ARG_KEYWORD_META]
     meta = json.loads(json_meta)
+    caller_func = inspect.getframeinfo(sys._getframe(1))[2]
+    param_singleton = singleton.Arguments()
+    meta[constants.ARG_KEYWORD_ARGUMENTS] = param_singleton.get_upcoming_arguments(caller_func)
     return meta
 
 
 def set_meta_in_data(data: dict[str, Any], meta: dict[str, Any]):
+    del meta[constants.ARG_KEYWORD_ARGUMENTS]
     json_meta = json.dumps(meta)
     data[constants.ARG_KEYWORD_META] = json_meta
 
