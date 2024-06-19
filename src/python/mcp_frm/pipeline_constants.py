@@ -1,7 +1,7 @@
 ARG_KEYWORD_LOOP = 'loop'
 ARG_KEYWORD_ITERATOR = 'iterator'
 ARG_KEYWORD_META = 'meta'
-ARG_KEYWORD_ARGUMENTS = 'collection_of_arguments'
+ARG_KEYWORD_ARGUMENTS = 'arguments'
 
 INPUT_PATH = "input_path"
 OUTPUT_PATH = "output_path"

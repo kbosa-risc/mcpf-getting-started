@@ -1,4 +1,6 @@
 from typing import Any
+
+
 class SingletonMeta(type):
     """
     This is a thread-safe implementation of Singleton.

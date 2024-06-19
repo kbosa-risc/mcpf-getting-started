@@ -1,0 +1,3 @@
+from mcp_frm.pipeline_constants import ARG_KEYWORD_ARGUMENTS as ARGUMENTS
+
+DEFAULT_IO_DATA_LABEL = 'LAST'

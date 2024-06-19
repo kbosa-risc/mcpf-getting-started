@@ -1,5 +1,5 @@
 from typing import Any
-import constants
+import pipeline_constants as constants
 import json
 import pipeline_singletons as singleton
 import inspect

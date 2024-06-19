@@ -1,35 +1,62 @@
-input_path: 'c:\Projects\risc_dse\data\input_files\'
-output_path: 'c:\Projects\risc_dse\data\parquet_files\'
-input_file_name: '*.tar.gz'
-entry_point: 'unzip_p'
-tmp_paths:
-  - 'c:\Projects\he_meta\data\csv_files\'
+input_path: &base_dir 'c:\Projects\risc_dse\configurable_pipeline_frm\src\python\mcp_use_case_UPO\data'
+output_path: *base_dir
+entry_point: 'EQE_p'
+further_configuration: ~
 imports:
-  - mcp_use_case_fronius.io_functions
-  - mcp_use_case_fronius.transformation_functions
+  - mcp_general_functions.mcp_general_transformations
+  - mcp_general_functions.mcp_general_io
+  - mcp_use_case_UPO.EQE_computations
 pipelines:
-  - unzip_p:
-    - unzip_all: ~                    # a pipeline can contain python functions
-    - loop_processing_all_dir: processing_dirs_p    # the prefix loop is a keyword
+  - EQE_p:
+    - read_help_tables_p: ~
+    - list_dir:
+      - {input_path: 'EQE\data\dut',
+         output: 'file_list_dut',
+         relative_path: True,
+         output_for_iteration: True}
+    - loop: read_dut_files_p
+    - list_dir:
+      - {input_path: 'EQE\data\calibration_fotodiode',
+         output: 'file_list_fotodiode',
+         relative_path: True,
+         output_for_iteration: True}
+    - loop: read_fotodiode_files_p
+    - initialization_p: ~
+    - loop_calculation: calculation_core_p
 
-    print_p:
-    - print_all: ~
+  - read_help_tables_p:
+    - read_csv:
+        - { file_name: 'Hamamatsu_PhotoDiode_Spectral_Response.csv',
+            input_path: 'help_table',
+            separator: ';',
+            relative_path: True }
+    - interpolate_first_column:
+        - { output: 'help_df_hamamatsu', step: 5 }
+    - read_csv:
+        - { file_name: 'Reference_Spectra_Derived.csv',
+            input_path: 'help_table',
+            separator: ';',
+            relative_path: True,
+            output: 'help_df_referance' }
 
-    processing_dirs_p:
-    - determine_end_date_from_filename: ~
-    - determine_output_filename: ~
-    - loop_processing_csvs: read_input_data_p
-    - resample_p: ~
+  - read_dut_files_p:
+    - read_csv:
+      - {input_path: 'EQE\data\dut', separator: ';', relative_path: True}
+    - vertical_concatenation:
+      - {left_value: 'df_dut'}
 
-    resample_p:
-    - transformation_p: ~       # a pipeline can contain other pipelines
-    - write_output_p: ~
+  - read_fotodiode_files_p:
+    - read_csv:
+      - { input_path: 'EQE\data\calibration_fotodiode', separator: ';', relative_path: True }
+    - vertical_concatenation:
+      - { left_value: 'df_fotodiode' }
 
-    read_input_data_p:
-    - read_csv_file: ~
+  - initialization_p:
+     - init_calc_eqe_perc: ~
+     - init_calc_integral_current_density: ~
 
-    write_output_p:
-    - write_to_parquet: ~
-
-    transformation_p:
-    - merging_columns: ~
+  - calculation_core_p:
+     - calculate_integral_current_density: ~
+     - calculate_eqe_perc: ~
+     - feedback_on_std_out: ~
+#

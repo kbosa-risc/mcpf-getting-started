@@ -13,7 +13,7 @@ from pathlib import Path
 from toolz import pipe
 import importlib
 import pandas as pd
-import constants
+import pipeline_constants as constants
 import pipeline_routines as routines
 import pipeline_singletons as singletons
 import sys
@@ -180,7 +180,7 @@ def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: li
     json_meta = json.dumps(meta)
     data = {constants.ARG_KEYWORD_LOOP: []}
     data[constants.ARG_KEYWORD_META] = json_meta
-    data[constants.ARG_KEYWORD_ARGUMENTS] = current_param_lists
+    # data[constants.ARG_KEYWORD_ARGUMENTS] = current_param_lists
     retval = pipe(data, *pipeline)
     return 0
 
