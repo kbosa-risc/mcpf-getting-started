@@ -1,11 +1,13 @@
 input_path: &base_dir 'c:\Projects\risc_dse\configurable_pipeline_frm\src\python\mcp_use_case_UPO\data'
 output_path: *base_dir
 entry_point: 'EQE_p'
-further_configuration: ~
+further_configuration:
+  - output_filename: 'testcsvsugg1'
 imports:
   - mcp_general_functions.mcp_general_transformations
   - mcp_general_functions.mcp_general_io
   - mcp_use_case_UPO.EQE_computations
+  - mcp_use_case_UPO.write_data
 pipelines:
   - EQE_p:
     - read_help_tables_p: ~
@@ -23,6 +25,7 @@ pipelines:
     - loop: read_fotodiode_files_p
     - initialization_p: ~
     - loop_calculation: calculation_core_p
+    - compose_output_p: ~
 
   - read_help_tables_p:
     - read_csv:
@@ -41,13 +44,21 @@ pipelines:
 
   - read_dut_files_p:
     - read_csv:
-      - {input_path: 'EQE\data\dut', separator: ';', relative_path: True}
+      - {input_path: 'EQE\data\dut',
+         separator: '\t| ',
+         relative_path: True,
+         skip_rows: 1,
+         engine: 'python'}
     - vertical_concatenation:
       - {left_value: 'df_dut'}
 
   - read_fotodiode_files_p:
     - read_csv:
-      - { input_path: 'EQE\data\calibration_fotodiode', separator: ';', relative_path: True }
+      - {input_path: 'EQE\data\calibration_fotodiode',
+         separator: '\t| ',
+         relative_path: True,
+         skip_rows: 1,
+         engine: 'python' }
     - vertical_concatenation:
       - { left_value: 'df_fotodiode' }
 
@@ -56,7 +67,11 @@ pipelines:
      - init_calc_integral_current_density: ~
 
   - calculation_core_p:
-     - calculate_integral_current_density: ~
      - calculate_eqe_perc: ~
+     - calculate_electron_flux: ~
+     - calculate_integral_current_density: ~
      - feedback_on_std_out: ~
-#
+
+  - compose_output_p:
+     - compose_output: ~
+     - write_eqe_sol1: ~

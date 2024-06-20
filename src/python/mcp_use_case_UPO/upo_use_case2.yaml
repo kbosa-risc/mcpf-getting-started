@@ -1,0 +1,14 @@
+further_configuration:
+  - output_filename: 'testcsvsugg2'
+
+pipeline_extension:
+  - initialization_p:
+      - init_calc_eqe_perc: ~
+
+  - calculation_core_p:
+      - calculate_eqe_perc: ~
+      - feedback_on_std_out: ~
+
+  - compose_output_p:
+      - compose_output: ~
+      - write_eqe_sol2: ~

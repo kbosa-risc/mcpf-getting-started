@@ -9,20 +9,28 @@ def init_calc_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
     if 'df' not in data:
         data['df'] = pd.DataFrame()
         data['df']["wavelength"] = data['df_dut'][data['df_dut'].columns[0]].astype(float)
-        data['loop_wavelength'] = data['df']["wavelength"].copy()
+        data['loop_wavelength'] = data['df']["wavelength"].to_list()
         routines.register_loop_iterator_list(data, 'loop_wavelength')
-    data['df']['EQE'] = []
+    data['eqe_values'] = []
     return data
 
 
 def init_calc_integral_current_density(data: dict[str, Any]) -> dict[str, Any]:
     if 'df' not in data:
         data['df'] = pd.DataFrame()
-        data['df']["wavelength"] = data['df_dut'][df_dut.columns[0]].astype(float)
-        data['loop_wavelength'] = data['df']["wavelength"].copy()
+        data['df']["wavelength"] = data['df_dut'][data['df_dut'].columns[0]].astype(float)
+        data['loop_wavelength'] = data['df']["wavelength"].to_list()
         routines.register_loop_iterator_list(data, 'loop_wavelength')
     data['last_values'] = (0, 0, 0)
-    data['df']['integral_current_density'] = []
+    data['density_values'] = []
+    return data
+
+
+def compose_output(data: dict[str, Any]) -> dict[str, Any]:
+    if 'density_values' in data:
+        data['df']["integral_current_density"] = data['density_values']
+    if 'eqe_values' in data:
+        data['df']["EQE"] = data['eqe_values']
     return data
 
 
@@ -30,57 +38,27 @@ def calculate_integral_current_density(data: dict[str, Any]) -> dict[str, Any]:
     """
     Calculates the integral of current density over a given wavelength range.
 
-    Args:
-        wavelength (int): The wavelength value.
-        dut_df (pd.DataFrame): DataFrame containing data related to the device under test.
-        photodiode_df (pd.DataFrame): DataFrame containing data related to the photodiode.
-        ref_spectral_response_help_table (pd.DataFrame): DataFrame containing reference spectral response values.
-        spectral_response_help_table (pd.DataFrame): DataFrame containing spectral response values.
-        last_values (tuple[float, float, float]): Tuple containing the last calculated integral current density,
-            last wavelength, and last current density.
+    wavelength (int): The wavelength value.
+    dut_df (pd.DataFrame): DataFrame containing data related to the device under test.
+    photodiode_df (pd.DataFrame): DataFrame containing data related to the photodiode.
+    ref_spectral_response_help_table (pd.DataFrame): DataFrame containing reference spectral response values.
+    spectral_response_help_table (pd.DataFrame): DataFrame containing spectral response values.
+    last_values (tuple[float, float, float]): Tuple containing the last calculated integral current density,
+        last wavelength, and last current density.
 
     Returns:
         tuple[float, float]: A tuple containing the integral current density and
                                 current density at the given wavelength.
     """
 
-    def calculate_electron_flux(wavelength_func):
-        # Get value of the help table on wavelength
-        ref_spectral_response_value = helper.vlookup(
-            wavelength_func, ref_spectral_response_help_table, 1, 3
-        )
-
-        photon_flux = (
-            ((ref_spectral_response_value
-            * (wavelength_func * (10**-9)))
-            / (conf.Constants.PLANCK * conf.Constants.LIGHT_SPEED))
-            / (10**4)
-        )
-
-        try:
-            electron_flux = (
-                (calculate_eqe_perc(
-                    wavelength_func, dut_df, photodiode_df, spectral_response_help_table
-                )
-                / 100)
-                * photon_flux
-            )
-        except ZeroDivisionError:
-            return 0
-        return electron_flux
-
     iterator = routines.pop_loop_iterator(data)
     if iterator:
         data['row'] = iterator
     if 'row' in data:
-        wavelength = data['row'].iloc[0]
-        dut_df = data['df_dut']
-        photodiode_df = data['df_fotodiode']
-        spectral_response_help_table = data['help_df_hamamatsu']
-        ref_spectral_response_help_table = data['help_df_referance']
+        wavelength = data['row']
         last_values = data['last_values']
+        electron_flux = data['electron_flux']
 
-        electron_flux = calculate_electron_flux(wavelength)
         current_density = (electron_flux * UPO_constants.ELECTRON_CHARGE) * 1000
         current_density_prev = last_values[2]
         current_density_wavelength = ((current_density + current_density_prev) / 2) * (
@@ -88,7 +66,7 @@ def calculate_integral_current_density(data: dict[str, Any]) -> dict[str, Any]:
         )
         integral_current_density = current_density_wavelength + last_values[0]
 
-        data['df']['integral_current_density'].append(integral_current_density)
+        data['density_values'].append(integral_current_density)
         data['last_values'] = (integral_current_density, wavelength, current_density)
     return data
 
@@ -97,11 +75,10 @@ def calculate_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
     """
     Calculate the external quantum efficiency percentage (EQE%) using provided data.
 
-    Args:
-        wavelength (int): The wavelength in nanometers at which EQE% is to be calculated.
-        dut_df (pd.DataFrame): DataFrame containing data for the device under test.
-        photodiode_df (pd.DataFrame): DataFrame containing data for the photodiode.
-        spectral_response_help_table (pd.DataFrame): DataFrame containing spectral response data.
+    wavelength (int): The wavelength in nanometers at which EQE% is to be calculated.
+    dut_df (pd.DataFrame): DataFrame containing data for the device under test.
+    photodiode_df (pd.DataFrame): DataFrame containing data for the photodiode.
+    spectral_response_help_table (pd.DataFrame): DataFrame containing spectral response data.
 
     Returns:
         float: The calculated external quantum efficiency percentage (EQE%).
@@ -111,7 +88,7 @@ def calculate_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
         data['row'] = iterator
     try:
         if 'row' in data:
-            wavelength = data['row'].iloc[0]
+            wavelength = data['row']
             dut_df = data['df_dut']
             photodiode_df = data['df_fotodiode']
             spectral_response_help_table = data['help_df_hamamatsu']
@@ -158,12 +135,38 @@ def calculate_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
                     * spectral_response
                     * 100
             )
-
-            data['df']['EQE'].append(eqe_perc)
+            data['eqe_perc'] = eqe_perc
+            data['eqe_values'].append(eqe_perc)
     except ZeroDivisionError:
-        pass
-    if 'row' in data:
+        data['eqe_perc'] = 0
+        # data['eqe_values'].append(0)
+    return data
 
+
+def calculate_electron_flux(data: dict[str, Any]) -> dict[str, Any]:
+    iterator = routines.pop_loop_iterator(data)
+    if iterator:
+        data['row'] = iterator
+        data['eqe_perc']
+    if 'row' in data and 'eqe_perc' in data:
+        wavelength_func = data['row']
+        eqe_perc = data['eqe_perc']
+        ref_spectral_response_help_table = data['help_df_referance']
+
+        ref_spectral_response_value = helper.vlookup(
+            wavelength_func, ref_spectral_response_help_table, 1, 3
+        )
+
+        photon_flux = (
+            ((ref_spectral_response_value
+              * (wavelength_func * (10**-9)))
+             / (UPO_constants.PLANCK * UPO_constants.LIGHT_SPEED))
+             / (10**4)
+        )
+
+        electron_flux = (eqe_perc / 100) * photon_flux
+
+        data['electron_flux'] = electron_flux
     return data
 
 
@@ -172,6 +175,6 @@ def feedback_on_std_out(data: dict[str, Any]) -> dict[str, Any]:
         if 'row_nr' not in data:
             data['row_nr'] = 0
         row = data['row']
-        print(f"{data['row_nr']}/{len(df) - 1} wavelength: {row.iloc[0]}")
+        print(f"{data['row_nr']}/{len(data['df']) - 1} wavelength: {row}")
         data['row_nr'] += 1
     return data

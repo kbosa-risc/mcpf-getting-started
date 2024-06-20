@@ -32,8 +32,8 @@ class PipelineConfig:
     imports: list[str]
     pipelines: list[dict[str, list[dict[str, str]]]]
     input_file_name: str = field(default=None)
-    pipeline_extension: list[dict[str, list[dict[str, str]]]] = field(default=None)
     tmp_paths: list[str] = field(default=None)
+    pipeline_extension: list[dict[str, list[dict[str, str]]]] = field(default=None)
     further_configuration: Optional[list[dict[str, str]]] = field(default=None)
 
 
@@ -45,7 +45,7 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
             [
                 layer.DataClassDefaultLayer(
                     PipelineConfig(
-                        '.', '.', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}]
+                        '.', '.', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], '', []
                     )
                 ),
             ],
@@ -59,7 +59,7 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
                 *yaml_layers,
                 layer.DataClassDefaultLayer(
                     PipelineConfig(
-                        '.', '.', '', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], [], ['.']
+                        '.', '.', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], '', []
                     )
                 ),
             ]
@@ -74,7 +74,7 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
 
         del l_config.pipelines[1:]
 
-        if len(l_config.pipeline_extension) > 0:
+        if l_config.pipeline_extension and len(l_config.pipeline_extension) > 0:
             for extension_element in l_config.pipeline_extension:
                 for key in extension_element:
                     l_config.pipelines[0][key] = extension_element[key]
