@@ -37,9 +37,15 @@ def get_current_input_dir(meta: dict[str, Any]) -> str:
     return input_dir
 
 
-def get_current_output_dir(meta: dict[str, Any]) -> str:
+def get_current_tmp_dir(meta: dict[str, Any]) -> str:
     index_of_dirs = next_tmp_dir_index(meta)
     output_dir = meta[constants.TMP_PATHS][index_of_dirs]
+    return output_dir
+
+
+def get_final_output_dir(meta: dict[str, Any]) -> str:
+    index_of_dirs = next_tmp_dir_index(meta)
+    output_dir = meta[constants.TMP_PATHS][-1]
     return output_dir
 
 

@@ -1,16 +1,23 @@
 input_path: 'c:\Projects\risc_dse\data\input_files'
 output_path: 'c:\Projects\risc_dse\data\parquet_files'
 input_file_name: '*.tar.gz'
-entry_point: 'unzip_p'
+entry_point: 'main_p'
 tmp_paths:
-  - 'c:\Projects\risc_dse\data\csv_files'
+  - 'c:\Projects\he_dse\data\csv_files\'
 imports:
   - mcp_use_case_fronius.io_functions
   - mcp_use_case_fronius.transformation_functions
+  - mcp_general_functions.mcp_general_io
 pipelines:
+  - main_p:
+    - list_dir:
+        - { relative_path: True, output_for_iteration: True }
+    - loop_unzip_all: unzip_p
+
   - unzip_p:
-    - unzip_all: ~                    # a pipeline can contain python functions
-    - loop_processing_all_dir: processing_dirs_p    # the prefix loop is a keyword
+    - unzip:
+        - { 'relative_path': True, 'output_into_next_tmp_folder': True }
+    - processing_dirs_p: ~
 
     print_p:
     - print_all: ~

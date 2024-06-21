@@ -13,13 +13,11 @@ pipelines:
     - read_help_tables_p: ~
     - list_dir:
       - {input_path: 'EQE\data\dut',
-         output: 'file_list_dut',
          relative_path: True,
          output_for_iteration: True}
     - loop: read_dut_files_p
     - list_dir:
       - {input_path: 'EQE\data\calibration_fotodiode',
-         output: 'file_list_fotodiode',
          relative_path: True,
          output_for_iteration: True}
     - loop: read_fotodiode_files_p

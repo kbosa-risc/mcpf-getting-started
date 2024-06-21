@@ -5,7 +5,7 @@ from typing import Any
 
 def write_eqe_sol1(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
-    outdir = routines.get_current_output_dir(meta)
+    outdir = routines.get_current_tmp_dir(meta)
     csv_name = outdir + '\\' + 'output_file'
     if 'output_filename' in meta:
         csv_name = outdir + '\\' + meta['output_filename']
@@ -80,7 +80,7 @@ def write_eqe_sol1(data: dict[str, Any]) -> dict[str, Any]:
 
 def write_eqe_sol2(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
-    outdir = routines.get_current_output_dir(meta)
+    outdir = routines.get_current_tmp_dir(meta)
     csv_name = outdir + '\\' + 'output_file'
     if 'output_filename' in meta:
         csv_name = outdir + '\\' + meta['output_filename']
