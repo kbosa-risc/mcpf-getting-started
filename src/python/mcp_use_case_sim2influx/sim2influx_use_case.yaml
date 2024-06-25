@@ -1,0 +1,25 @@
+input_path: &base_dir 'c:\Projects\risc_dse\data_sim'
+output_path: *base_dir
+entry_point: sim2influx_p
+further_configuration:
+  - output_filename: 'testcsvsugg1'
+imports:
+  - mcp_general_functions.mcp_general_transformations
+  - mcp_general_functions.mcp_general_io
+  - mcp_use_case_sim2influx.transformation_functions
+pipelines:
+  - sim2influx_p:
+    - list_dir:
+       - { relative_path: True, output_for_iteration: True }
+    - loop: read_sub_dirs_p
+
+  - read_sub_dirs_p:
+    - get_simulation_id: ~
+    - list_dir:
+      - { output_for_iteration: True }
+    - loop: process_input_data_p
+
+  - process_input_data_p:
+    - read_csv:
+      - { separator: '\t| ', relative_path: True, skip_rows: 1, engine: 'python' }
+    - data_conversions: ~

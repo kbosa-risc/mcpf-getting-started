@@ -40,3 +40,8 @@ def vlookup(
         value = 0
 
     return value
+
+
+def convert_second_to_ms(timestamp: int):
+    #  0.000625
+    return timestamp * 1000 * 1000

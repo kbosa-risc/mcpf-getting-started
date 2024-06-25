@@ -44,7 +44,6 @@ pipelines:
     - read_csv:
       - {input_path: 'EQE\data\dut',
          separator: '\t| ',
-         relative_path: True,
          skip_rows: 1,
          engine: 'python'}
     - vertical_concatenation:
@@ -54,7 +53,6 @@ pipelines:
     - read_csv:
       - {input_path: 'EQE\data\calibration_fotodiode',
          separator: '\t| ',
-         relative_path: True,
          skip_rows: 1,
          engine: 'python' }
     - vertical_concatenation:

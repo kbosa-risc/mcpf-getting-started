@@ -39,7 +39,7 @@ def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
             # Close the tar file
             tar.close()
 
-    data['dirs_of_input_files'] = list(os.listdir(output_dir))
+    data['dirs_of_input_files'] = list(map(lambda x: output_dir + '\\' + x, os.listdir(output_dir)))
     routines.register_loop_iterator_list(data, 'dirs_of_input_files')
     routines.set_current_output_dir_to_input_dir(meta)
     # routines.set_meta_in_data(data, meta)
@@ -51,11 +51,13 @@ def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
     if not iterator:
         iterator = data[constants.DEFAULT_IO_DATA_LABEL]
-    input_dir = routines.get_current_tmp_dir(meta)
-    date_str = iterator.replace("Archive_", "").replace("-csv", "").replace("-parquet", "")
+    else:
+        data[constants.DEFAULT_IO_DATA_LABEL] = iterator
+    meta['current_folder'] = iterator[iterator.find("Archive"):].replace(".tar.gz", "")
+    input_dir = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
+    date_str = meta['current_folder'].replace("Archive_", "").replace("-csv", "").replace("-parquet", "")
     meta['end_date'] = date_str
-    meta['current_folder'] = iterator
-    data['files'] = os.listdir(input_dir + '\\' + iterator)
+    data['files'] = os.listdir(input_dir)
     data['sample_rate_dict'] = {"name": [], "df": [], "srate": []}
     routines.register_loop_iterator_list(data, 'files')
     routines.set_meta_in_data(data, meta)
