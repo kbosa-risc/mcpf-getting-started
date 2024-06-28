@@ -17,11 +17,24 @@ import pipeline_constants as constants
 import pipeline_routines as routines
 import pipeline_singletons as singletons
 import sys
+import os.path
+import dataclasses
 
 
 dept_of_nested_loops = 0
 current_max_dept_of_nested_loops = 0
 loop_kernel_pipelines = []    # it contains the child pipeline of loops in the order of execution
+
+
+@dataclass
+class DatabaseConfig:
+    type: str
+    url: str
+    user: Optional[str] = None
+    password: Optional[str] = None
+    token: Optional[str] = None
+    org: Optional[str] = None
+    bucket: Optional[str] = None
 
 
 @dataclass
@@ -35,6 +48,7 @@ class PipelineConfig:
     tmp_paths: list[str] = field(default=None)
     pipeline_extension: list[dict[str, list[dict[str, str]]]] = field(default=None)
     further_configuration: Optional[list[dict[str, str]]] = field(default=None)
+    database_configs: Optional[List[DatabaseConfig]] = field(default=None)
 
 
 def load_pipeline_config(argv: list[str]) -> PipelineConfig:
@@ -91,9 +105,8 @@ def increment_dept_of_nested_loops():
 
 def init_iterator(data: dict[str, Any]) -> dict[str, Any]:
     global dept_of_nested_loops
-    name_of_list_of_loop_iterators = data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
-    iterator = data[name_of_list_of_loop_iterators].pop(0)
-    data[constants.ARG_KEYWORD_ITERATOR] = iterator
+    loop_singleton = singletons.LoopIterators()
+    loop_singleton.init_current_iterator(dept_of_nested_loops - 1)
     return data
 
 
@@ -101,19 +114,18 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
     global dept_of_nested_loops
     global current_max_dept_of_nested_loops
     global loop_kernel_pipelines
+    loop_singleton = singletons.LoopIterators()
     param_singleton = singletons.Arguments()
     if len(loop_kernel_pipelines) > 0:
         increment_dept_of_nested_loops()
         kernel = loop_kernel_pipelines[dept_of_nested_loops - 1]
-        name_of_list_of_loop_iterators = data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
         param_singleton.replace_current_argument_lists()
-        while len(data[name_of_list_of_loop_iterators]) > 0:
+        while loop_singleton.size_of_an_iterator_list(dept_of_nested_loops - 1) > 0:
             data = pipe(data, *kernel)
             param_singleton.renew_loop_argument_lists()
         param_singleton.restore_last_buffered_argument_list()
-        routines.pop_loop_iterator(data)   # it is needed just in that case if no one used up the iterator
-        del data[name_of_list_of_loop_iterators]
-        del data[constants.ARG_KEYWORD_LOOP][dept_of_nested_loops - 1]
+        routines.pop_loop_iterator()  # it is needed just in that case if no one used up the iterator
+        loop_singleton.remove_an_iterator_list(dept_of_nested_loops - 1)
         dept_of_nested_loops -= 1
         if dept_of_nested_loops == 0:
             del loop_kernel_pipelines[:current_max_dept_of_nested_loops]
@@ -171,21 +183,30 @@ def validate_pipeline(
 def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: list) -> (str, dict[str, pd.DataFrame]):
     config.tmp_paths.insert(0, config.input_path)
     config.tmp_paths.append(config.output_path)
-    meta = {constants.TMP_PATH_INDEX : 0}
+    meta = {constants.TMP_PATH_INDEX: 0}
     meta[constants.TMP_PATHS] = config.tmp_paths
     if config.further_configuration:
         for key_value_pair in config.further_configuration:
             for key in key_value_pair:
                 meta[key] = key_value_pair[key]
+    if config.database_configs:
+        db_configs = []
+        for config_element in config.database_configs:
+            config_dict = {}
+            for f in dataclasses.fields(config_element):
+                config_dict[f.name] = getattr(config_element, f.name)
+            db_configs.append(config_dict)
+        meta[constants.DB_CONFIG] = db_configs
     json_meta = json.dumps(meta)
-    data = {constants.ARG_KEYWORD_LOOP: []}
-    data[constants.ARG_KEYWORD_META] = json_meta
-    # data[constants.ARG_KEYWORD_ARGUMENTS] = current_param_lists
+    data = {constants.ARG_KEYWORD_META: json_meta}
     retval = pipe(data, *pipeline)
     return 0
 
 
 if __name__ == "__main__":
+    for arg in sys.argv[1:]:
+        if not os.path.isfile(arg):
+            raise FileNotFoundError("Error: config file " + arg + " does not exist.")
     c = load_pipeline_config(sys.argv)
     if not c.imports or not c.pipelines or not c.entry_point:
         raise NotImplementedError("Error: Missing 'imports', 'pipeline' or 'entry_point' in the config file.")

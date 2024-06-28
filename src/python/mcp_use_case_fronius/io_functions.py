@@ -24,7 +24,6 @@ def check_sample_rate_quantile(df: pd.DataFrame, time_column: str = "timestamp")
 
 
 def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
     meta = routines.get_meta_data(data)
     input_dir = routines.get_current_input_dir(meta)
     output_dir = routines.get_current_tmp_dir(meta)
@@ -39,15 +38,15 @@ def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
             # Close the tar file
             tar.close()
 
-    data['dirs_of_input_files'] = list(map(lambda x: output_dir + '\\' + x, os.listdir(output_dir)))
-    routines.register_loop_iterator_list(data, 'dirs_of_input_files')
-    routines.set_current_output_dir_to_input_dir(meta)
-    # routines.set_meta_in_data(data, meta)
+    dirs_of_input_files = list(map(lambda x: output_dir + '\\' + x, os.listdir(output_dir)))
+    routines.register_loop_iterator_list(dirs_of_input_files)
+    # routines.set_current_output_dir_to_input_dir(meta)
+    routines.set_meta_in_data(data, meta)
     return data
 
 
 def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     if not iterator:
         iterator = data[constants.DEFAULT_IO_DATA_LABEL]
@@ -57,9 +56,9 @@ def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
     input_dir = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
     date_str = meta['current_folder'].replace("Archive_", "").replace("-csv", "").replace("-parquet", "")
     meta['end_date'] = date_str
-    data['files'] = os.listdir(input_dir)
+    files = os.listdir(input_dir)
     data['sample_rate_dict'] = {"name": [], "df": [], "srate": []}
-    routines.register_loop_iterator_list(data, 'files')
+    routines.register_loop_iterator_list(files)
     routines.set_meta_in_data(data, meta)
     return data
 
@@ -72,7 +71,7 @@ def determine_output_filename(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def read_parquet_file(data: dict[str, Any]) -> dict[str, Any]:
-    file = routines.pop_loop_iterator(data)
+    file = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
 
     tmp_path = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
@@ -103,7 +102,7 @@ def read_parquet_file(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def read_csv_file(data: dict[str, Any]) -> dict[str, Any]:
-    file = routines.pop_loop_iterator(data)
+    file = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     input_dir = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
 
@@ -129,10 +128,10 @@ def write_to_parquet(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def print_all(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     input_dir = routines.get_current_input_dir(meta)
-    for file in os.listdir(input_dir + '/' + iterator):
+    for file in os.listdir(iterator):
         print(file)
     routines.set_meta_in_data(data, meta)
     return data

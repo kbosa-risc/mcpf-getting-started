@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 
 
@@ -12,6 +13,39 @@ class SingletonMeta(type):
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
+
+
+class LoopIterators(metaclass=SingletonMeta):
+    def __init__(self):
+        self.listsOfLoopIterators = []
+        self.iterator = None
+
+    def register_new_iterator_list(self, iterator_list: list, deep_copy: bool = False):
+        if deep_copy:
+            copy_of_iterator_list = copy.deepcopy(iterator_list.copy)
+            self.listsOfLoopIterators.append(copy_of_iterator_list)
+        else:
+            self.listsOfLoopIterators.append(list(iterator_list))
+
+    def size_of_an_iterator_list(self, index: int) -> int:
+        if len(self.listsOfLoopIterators) < index:
+            return 0
+        else:
+            return len(self.listsOfLoopIterators[index])
+
+    def remove_an_iterator_list(self, index: int):
+        if len(self.listsOfLoopIterators) > index:
+            del self.listsOfLoopIterators[index]
+
+    def init_current_iterator(self, index: int):
+        if len(self.listsOfLoopIterators) > index and len(self.listsOfLoopIterators[index]) > 0:
+            self.iterator = self.listsOfLoopIterators[index].pop(0)
+
+    def pop_iterator(self) -> Any:
+        iterator = self.iterator
+        self.iterator = None
+        return iterator
+
 
 
 class Arguments(metaclass=SingletonMeta):

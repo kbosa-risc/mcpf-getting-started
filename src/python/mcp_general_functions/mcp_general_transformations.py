@@ -6,7 +6,7 @@ from mcp_general_functions import helper
 
 
 def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
     arg = {
@@ -40,7 +40,7 @@ def interpolate_first_column(data: dict[str, Any]) -> dict[str, Any]:
             pd.DataFrame: DataFrame with missing values interpolated.
         """
     # general code part 2/1
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
     arg = {

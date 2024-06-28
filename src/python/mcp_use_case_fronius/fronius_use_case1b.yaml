@@ -12,7 +12,7 @@ pipelines:
   - main_p:
     - list_dir:
         - { relative_path: True, output_for_iteration: True }
-    - loop_unzip_all: unzip_p
+    - loop: unzip_p
 
   - unzip_p:
     - determine_end_date_from_filename: ~

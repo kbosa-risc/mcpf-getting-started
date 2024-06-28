@@ -1,7 +1,8 @@
 import mcp_frm.pipeline_routines as routines
 import pandas as pd
 from typing import Any
-
+from influxdb_client.client import influxdb_client
+from influxdb_client.client.write_api import SYNCHRONOUS
 import os
 import mcp_general_functions.constants as constants
 import tarfile
@@ -9,7 +10,7 @@ import tarfile
 
 def list_dir(data: dict[str, Any]) -> dict[str, Any]:
     # general code part 2/1
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
 
     # default_arguments_values
@@ -43,8 +44,8 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
             else:
                 data[arg['output']].append(file)
     if arg['output_for_iteration']:
-        data['list_dir_for_loop'] = data[arg['output']].copy()
-        routines.register_loop_iterator_list(data, 'list_dir_for_loop')
+        list_dir_for_loop = data[arg['output']].copy()
+        routines.register_loop_iterator_list(list_dir_for_loop)
     routines.set_meta_in_data(data, meta)
     return data
 
@@ -57,7 +58,7 @@ def set_next_tmp_dir_as_input_dir(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def unzip(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
     default_input_path = '.'
@@ -99,7 +100,7 @@ def unzip(data: dict[str, Any]) -> dict[str, Any]:
 
 def read_csv(data: dict[str, Any]) -> dict[str, Any]:
     # general code part 2/1
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
 
     # default_arguments_values
@@ -136,5 +137,34 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
     )
 
     # general code part 2/2
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
+def influx_df_write(data: dict[str, Any]) -> dict[str, Any]:
+    meta = routines.get_meta_data(data)
+    db_conf = routines.get_db_config(meta, 'influx')
+    # token: str = os.environ.get("INFLUXDB_TOKEN")
+    arg = {
+        'input': constants.DEFAULT_IO_DATA_LABEL,
+        'measurement_name': ''
+    }
+    # merging default values with current argument values
+    if meta[constants.ARGUMENTS]:
+        arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    with influxdb_client.InfluxDBClient(
+        url=db_conf['url'], token=arg['token'], org=db_conf['org']
+    ) as influx_client:
+        write_api = influx_client.write_api(write_options=SYNCHRONOUS)
+
+        # writing entire dataframe into database.
+        write_api.write(
+            org=db_conf['org'],
+            record=data[arg['input']],
+            bucket=db_conf['bucket'],
+            data_frame_measurement_name=arg['measurement_name']
+        )
+        # general code part 2/2
     routines.set_meta_in_data(data, meta)
     return data

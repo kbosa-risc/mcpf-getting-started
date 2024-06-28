@@ -9,8 +9,8 @@ def init_calc_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
     if 'df' not in data:
         data['df'] = pd.DataFrame()
         data['df']["wavelength"] = data['df_dut'][data['df_dut'].columns[0]].astype(float)
-        data['loop_wavelength'] = data['df']["wavelength"].to_list()
-        routines.register_loop_iterator_list(data, 'loop_wavelength')
+        loop_wavelength = data['df']["wavelength"].to_list()
+        routines.register_loop_iterator_list(loop_wavelength)
     data['eqe_values'] = []
     return data
 
@@ -19,8 +19,8 @@ def init_calc_integral_current_density(data: dict[str, Any]) -> dict[str, Any]:
     if 'df' not in data:
         data['df'] = pd.DataFrame()
         data['df']["wavelength"] = data['df_dut'][data['df_dut'].columns[0]].astype(float)
-        data['loop_wavelength'] = data['df']["wavelength"].to_list()
-        routines.register_loop_iterator_list(data, 'loop_wavelength')
+        loop_wavelength = data['df']["wavelength"].to_list()
+        routines.register_loop_iterator_list(loop_wavelength)
     data['last_values'] = (0, 0, 0)
     data['density_values'] = []
     return data
@@ -51,7 +51,7 @@ def calculate_integral_current_density(data: dict[str, Any]) -> dict[str, Any]:
                                 current density at the given wavelength.
     """
 
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     if iterator:
         data['row'] = iterator
     if 'row' in data:
@@ -83,7 +83,7 @@ def calculate_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
     Returns:
         float: The calculated external quantum efficiency percentage (EQE%).
     """
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     if iterator:
         data['row'] = iterator
     try:
@@ -144,7 +144,7 @@ def calculate_eqe_perc(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def calculate_electron_flux(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     if iterator:
         data['row'] = iterator
         data['eqe_perc']

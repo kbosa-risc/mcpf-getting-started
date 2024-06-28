@@ -10,7 +10,7 @@ imports:
 pipelines:
   - unzip_p:
     - unzip_all: ~                    # a pipeline can contain python functions
-    - loop_processing_all_dir: processing_dirs_p    # the prefix loop is a keyword
+    - loop: processing_dirs_p    # the prefix loop is a keyword
 
     print_p:
     - print_all: ~

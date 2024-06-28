@@ -23,12 +23,14 @@ def set_meta_in_data(data: dict[str, Any], meta: dict[str, Any]):
     data[constants.ARG_KEYWORD_META] = json_meta
 
 
-def register_loop_iterator_list(data: dict[str, Any], list_name):
-    data[constants.ARG_KEYWORD_LOOP].append(list_name)
+def register_loop_iterator_list(iterator_list: list, deep_copy: bool = False):
+    loop_singleton = singleton.LoopIterators()
+    loop_singleton.register_new_iterator_list(iterator_list, deep_copy)
 
 
-def pop_loop_iterator(data: dict[str, Any]) -> Any:
-    return data.pop(constants.ARG_KEYWORD_ITERATOR, None)
+def pop_loop_iterator() -> Any:
+    loop_singleton = singleton.LoopIterators()
+    return loop_singleton.pop_iterator()
 
 
 def get_current_input_dir(meta: dict[str, Any]) -> str:
@@ -58,3 +60,17 @@ def next_tmp_dir_index(meta: dict[str, Any]) -> int:
 
 def set_current_output_dir_to_input_dir(meta: dict[str, Any]):
     meta[constants.TMP_PATH_INDEX] = next_tmp_dir_index(meta)
+
+
+def get_db_config(meta: dict[str, Any], db_type: str) -> dict[str, Any]|None:
+    if constants.DB_CONFIG not in meta or len(meta[constants.DB_CONFIG]) == 0:
+        return None
+    ret_val_dict: dict[str, Any] = meta[constants.DB_CONFIG][0]
+    index = 1
+    while ret_val_dict['type'] != db_type and index < len(meta[constants.DB_CONFIG]):
+        ret_val_dict = meta[constants.DB_CONFIG][index]
+        index += 1
+    if ret_val_dict['type'] == db_type:
+        return ret_val_dict
+    else:
+        return None

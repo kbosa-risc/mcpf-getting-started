@@ -13,7 +13,7 @@ def test1(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def test2_loop_kernel(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
 
     # specific code part
     pass
@@ -26,8 +26,10 @@ def test3_loop_data_preparation(data: dict[str, Any]) -> dict[str, Any]:
     # specific code part
     pass
 
-    data['loop_list'] = list(range(0,10))
-    routines.register_loop_iterator_list(data, 'loop_list')
+    loop_list = list(range(0,10))
+    routines.register_loop_iterator_list(loop_list)
+    # or
+    routines.register_loop_iterator_list(loop_list, deep_copy = True)
     # If sooner or later a loop will come in the pipeline after this step above,
     # then the loop will go through all the elements of the given lists and will
     # provide each of them once for the members of the loop kernel
@@ -36,7 +38,7 @@ def test3_loop_data_preparation(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def test3_meta_data_with_arguments(data: dict[str, Any]) -> dict[str, Any]:
-    iterator = routines.pop_loop_iterator(data)
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
     arg = {
