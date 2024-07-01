@@ -28,6 +28,8 @@ def data_conversions(data: dict[str, Any]) -> dict[str, Any]:
     if meta['output_db'] == SupportedDatabases.influx:
         # logger.debug("Influx database detected as active database. Converting unix time to timestamp.")
         df["Time"] = pd.to_datetime(df["Time"], unit="us")
-    data[constants.DEFAULT_IO_DATA_LABEL] = df.set_index("Time")
+        data[constants.DEFAULT_IO_DATA_LABEL] = df.set_index("Time")
+    else:
+        data[constants.DEFAULT_IO_DATA_LABEL] = df
     routines.set_meta_in_data(data, meta)
     return data
