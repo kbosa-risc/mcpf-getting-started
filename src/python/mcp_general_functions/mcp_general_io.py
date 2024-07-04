@@ -1,12 +1,11 @@
 import mcp_frm.pipeline_routines as routines
 import pandas as pd
 from typing import Any
-from influxdb_client.client import influxdb_client
-from influxdb_client.client.write_api import SYNCHRONOUS
-from sqlalchemy import create_engine
 import os
 import mcp_general_functions.constants as constants
 import tarfile
+import pyarrow.parquet as pq
+import pyarrow as pa
 
 
 def list_dir(data: dict[str, Any]) -> dict[str, Any]:
@@ -142,55 +141,77 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
-def influx_df_write(data: dict[str, Any]) -> dict[str, Any]:
+def read_excel_worksheets(data: dict[str, Any]) -> dict[str, Any]:
+    # general code part 2/1
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
-    db_conf = routines.get_db_config(meta, 'influx')
-    # token: str = os.environ.get("INFLUXDB_TOKEN")
+
+    # default_arguments_values
+    default_input_path = '.'
+    if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
+        default_input_path = data.pop(constants.DEFAULT_IO_DATA_LABEL, '.')
     arg = {
-        'input': constants.DEFAULT_IO_DATA_LABEL,
-        'measurement_name': ''
+        'output': constants.DEFAULT_IO_DATA_LABEL,
+        'input_path': default_input_path,
+        'file_name': '',
+        'relative_path': False,
+        'skip_rows': 0,
+        'skip_worksheets': [],
+        'engine': 'openpyxl'
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
         arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    if iterator:
+        arg['input_path'] = iterator
 
-    with influxdb_client.InfluxDBClient(
-        url=db_conf['url'], token=arg['token'], org=db_conf['org']
-    ) as influx_client:
-        write_api = influx_client.write_api(write_options=SYNCHRONOUS)
+    # specific code part
+    if arg['file_name']:
+        arg['input_path'] = arg['input_path'] + '\\' + arg['file_name']
 
-        # writing entire dataframe into database.
-        write_api.write(
-            org=db_conf['org'],
-            record=data[arg['input']],
-            bucket=db_conf['bucket'],
-            data_frame_measurement_name=arg['measurement_name']
-        )
-        # general code part 2/2
+    if arg['relative_path']:
+        arg['input_path'] = routines.get_current_input_dir(meta) + '\\' + arg['input_path']
+    xls = pd.ExcelFile(arg['input_path'], engine=arg['engine'])
+    data[arg['output']] = {}
+    for nr, sheet_name in enumerate(xls.sheet_names):
+        if nr in arg['skip_worksheets']:
+            continue
+        data[arg['output']][sheet_name] = xls.parse(sheet_name, skiprows=arg['skip_rows'])
+
+    # general code part 2/2
     routines.set_meta_in_data(data, meta)
     return data
 
 
-def timescale_df_write(data: dict[str, Any]) -> dict[str, Any]:
+def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
+    # general code part 2/1
+    iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
-    db_conf = routines.get_db_config(meta, 'timescale')
+
+    # default_arguments_values
+    default_output_path = '.'
     arg = {
         'input': constants.DEFAULT_IO_DATA_LABEL,
-        'schema': 'public',
-        'table': ''
+        'output': constants.DEFAULT_IO_DATA_LABEL,
+        'output_path': default_output_path,
+        'file_name': data.pop(constants.DEFAULT_OUTPUT_FILE, ''),
+        'relative_path': False
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
         arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    # if iterator:
+    #    arg['output_path'] = iterator
 
-    with (create_engine(db_conf['url']).connect() as con):
-        data[arg['input']].to_sql(
-            name=arg['table'],
-            con=con,
-            schema=arg['schema'],
-            if_exists="append",
-            index=False,
-        )
+    # specific code part
+    if arg['file_name']:
+        arg['output_path'] = arg['output_path'] + '\\' + arg['file_name']
+
+    if arg['relative_path']:
+        arg['output_path'] = routines.get_current_tmp_dir(meta) + '\\' + arg['output_path']
+    pq.write_table(pa.Table.from_pandas(data[arg['input']]), arg['output_path'])
 
     # general code part 2/2
     routines.set_meta_in_data(data, meta)

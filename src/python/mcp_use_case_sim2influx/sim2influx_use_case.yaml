@@ -11,6 +11,7 @@ database_configs:
 imports:
   - mcp_general_functions.mcp_general_transformations
   - mcp_general_functions.mcp_general_io
+  - mcp_general_functions.mcp_general_db
   - mcp_use_case_sim2influx.transformation_functions
 pipelines:
   - sim2db_p:
