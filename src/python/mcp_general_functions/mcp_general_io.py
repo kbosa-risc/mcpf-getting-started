@@ -37,12 +37,13 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
         else:
             arg['input_path'] = routines.get_current_input_dir(meta)
     data[arg['output']] = []
-    if len(os.listdir(arg['input_path'])) != 0:
-        for file in os.listdir(arg['input_path']):
-            if arg['input_path'] != '.':
-                data[arg['output']].append(arg['input_path'] + '\\' + file)
-            else:
-                data[arg['output']].append(file)
+    if os.path.isdir(arg['input_path']):
+        if len(os.listdir(arg['input_path'])) != 0:
+            for file in os.listdir(arg['input_path']):
+                if arg['input_path'] != '.':
+                    data[arg['output']].append(arg['input_path'] + '\\' + file)
+                else:
+                    data[arg['output']].append(file)
     if arg['output_for_iteration']:
         list_dir_for_loop = data[arg['output']].copy()
         routines.register_loop_iterator_list(list_dir_for_loop)
@@ -238,7 +239,8 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
     if arg['relative_path']:
         arg['output_path'] = routines.get_current_tmp_dir(meta) + '\\' + arg['output_path']
     pq.write_table(pa.Table.from_pandas(data[arg['input']]), arg['output_path'])
-
+    if arg['input'] != arg['output']:
+        data[arg['output']] = data[arg['input']]
     # general code part 2/2
     routines.set_meta_in_data(data, meta)
     return data
