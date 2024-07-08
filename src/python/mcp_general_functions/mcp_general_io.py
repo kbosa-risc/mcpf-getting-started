@@ -141,6 +141,32 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
+def set_default_file_name_from_data(data: dict[str, Any]) -> dict[str, Any]:
+    # general code part 2/1
+    iterator = routines.pop_loop_iterator()
+    meta = routines.get_meta_data(data)
+
+    # default_arguments_values
+    default_input = ''
+    if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
+        default_input = data.pop(constants.DEFAULT_IO_DATA_LABEL, '')
+    arg = {
+        'input': default_input,
+        'output': constants.DEFAULT_OUTPUT_FILE,
+        'extension': ''
+    }
+    # merging default values with current argument values
+    if meta[constants.ARGUMENTS]:
+        arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    if iterator:
+        arg['input'] = iterator
+
+    # specific code part
+    data[arg['output']] = data[arg['input']] + arg['extension']
+    return data
+
+
 def read_excel_worksheets(data: dict[str, Any]) -> dict[str, Any]:
     # general code part 2/1
     iterator = routines.pop_loop_iterator()

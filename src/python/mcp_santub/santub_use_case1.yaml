@@ -19,6 +19,10 @@ pipelines:
       - list_dir:
         - { output_for_iteration: True }
       - loop: process_excel_p
+      - set_default_file_name_from_data:
+          - { input: 'dir_name', extension: '.parquet' }
+      - write_parquet:
+          - { input: 'all_object_with_the_same_type', relative_path: True }
 
   - process_excel_p:
       - get_object_name: ~
@@ -27,3 +31,5 @@ pipelines:
       - process_worksheet_data: ~
       - write_parquet:
           - { relative_path: True }
+      - vertical_concatenation:
+          - { left_value: 'all_object_with_the_same_type' }
