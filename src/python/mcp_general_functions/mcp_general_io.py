@@ -244,3 +244,45 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
     # general code part 2/2
     routines.set_meta_in_data(data, meta)
     return data
+
+
+def write_csv(data: dict[str, Any]) -> dict[str, Any]:
+    # general code part 2/1
+    iterator = routines.pop_loop_iterator()
+    meta = routines.get_meta_data(data)
+
+    # default_arguments_values
+    default_output_path = '.'
+    arg = {
+        'input': constants.DEFAULT_IO_DATA_LABEL,
+        'output': constants.DEFAULT_IO_DATA_LABEL,
+        'output_path': default_output_path,
+        'file_name': data.pop(constants.DEFAULT_OUTPUT_FILE, ''),
+        'relative_path': False,
+        'separator': ','
+    }
+    # merging default values with current argument values
+    if meta[constants.ARGUMENTS]:
+        arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    # if the function part of a loop
+    # if iterator:
+    #    arg['output_path'] = iterator
+
+    # specific code part
+    if arg['file_name']:
+        arg['output_path'] = arg['output_path'] + '\\' + arg['file_name']
+
+    if arg['relative_path']:
+        arg['output_path'] = routines.get_current_tmp_dir(meta) + '\\' + arg['output_path']
+    data[arg['input']].to_csv(
+                                arg['output_path'],
+                                sep=arg['separator'],
+                                index=False
+    )
+    if arg['input'] != arg['output']:
+        data[arg['output']] = data[arg['input']]
+    # general code part 2/2
+    routines.set_meta_in_data(data, meta)
+    return data
+

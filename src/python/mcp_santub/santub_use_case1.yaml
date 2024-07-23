@@ -4,7 +4,7 @@ entry_point: 'prepare_reports_p'
 further_configuration:
   - default_value_note: 0
   - header:
-      ['Jahr', 'Objekt Name', 'Pos.', 'Bauteil', 'Lokation', 'Schäden', 'Anzahl Lokat.', 'Länge (m)', 'Breite (m)', 'Material', 'Note', 'Anmerkung', 'Zusammennote', 'Y', 'X']
+      ['Jahr', 'Objekt Name', 'Baujahr', 'Pos.', 'Bauteil', 'Lokation', 'Schaeden', 'Anzahl Lokat.', 'Laenge (m)', 'Breite (m)', 'Material', 'Note', 'Anmerkung', 'Zustandnote', 'Y', 'X']
 
 imports:
   - mcp_general_functions.mcp_general_transformations

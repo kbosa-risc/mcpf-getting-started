@@ -11,13 +11,16 @@ def get_object_name(data: dict[str, Any]) -> dict[str, Any]:
     iterator = routines.pop_loop_iterator()
     if iterator:
         data[constants.DEFAULT_IO_DATA_LABEL] = iterator
-        data['object_name'] = " ".join(iterator.split("InspB_")[-1].split("_")[0:-1])
+        tmp_str = iterator.removesuffix(".xlsx").removesuffix("_neu")
+        data['object_name'] = " ".join(tmp_str.split("InspB_")[-1].split("_")[0:-1])
         data[constants.DEFAULT_OUTPUT_FILE] = data['object_name'] + ".parquet"
         data['dir_name'] = iterator.split('\\')[-2]
         # df[(df == 'banana').any(axis=1)]
         y = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['Y']
         x = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['X']
+        year = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['Baujahr']
         data['coords'] = [y, x]
+        data['year_of_building'] = year
     return data
 
 
@@ -48,7 +51,7 @@ def process_worksheet_data(data: dict[str, Any]) -> dict[str, Any]:
                 continue
             else:
                 counter = 0
-                output_entry = [year, data['object_name'], current_pos, current_build_part]
+                output_entry = [year, data['object_name'], data['year_of_building'], current_pos, current_build_part]
                 # if not current_overall_note:    # Correct the typo in the overall note from the next line
                 #    current_overall_note = row.iat[8]
                 nr_of_injuries = row.iat[4]
