@@ -47,7 +47,7 @@ pipelines:
          skip_rows: 1,
          engine: 'python'}
     - vertical_concatenation:
-      - {left_value: 'df_dut'}
+      - {left_value: 'df_dut', reset_index: True}
 
   - read_fotodiode_files_p:
     - read_csv:
@@ -56,7 +56,7 @@ pipelines:
          skip_rows: 1,
          engine: 'python' }
     - vertical_concatenation:
-      - { left_value: 'df_fotodiode' }
+      - { left_value: 'df_fotodiode', reset_index: True}
 
   - initialization_p:
      - init_calc_eqe_perc: ~

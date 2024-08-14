@@ -4,7 +4,7 @@ import mcp_general_functions.constants as constants
 from typing import Any
 import pandas as pd
 
-dll_directory = "c:\\Projects\\risc_dse\\configurable_pipeline_frm\\src\python\\mcp_use_case_dot_net\\"
+dll_directory = "c:\\Projects\\risc_dse\\configurable_pipeline_frm\\src\\python\\mcp_use_case_dot_net\\"
 dll_path = os.path.join(dll_directory, "ITS_West.Base.dll")
 
 # Add the directory to the CLR search path

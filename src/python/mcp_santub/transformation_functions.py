@@ -6,6 +6,29 @@ import mcp_general_functions.constants as constants
 import pandas as pd
 
 
+def extract_overall_grades(df: pd.DataFrame) -> dict[str, int]:
+    ret_val = {}
+    is_grade_column_identified = False
+    grade_column_index = -1
+    is_year_column_identified = False
+    for nr, row in df.iterrows():
+        if nr == 0:
+            if str(row.iat[8]).lower().startswith('overall'):
+                grade_column_index = 8
+                is_grade_column_identified = True
+            elif str(row.iat[9]).lower().startswith('overall'):
+                grade_column_index = 9
+                is_grade_column_identified = True
+        elif is_grade_column_identified and str(row.iat[1]).lower().endswith('jahr'):
+            is_year_column_identified = True
+        elif is_year_column_identified and str(row.iat[1]) != 'nan' and str(row.iat[grade_column_index]) != 'nan':
+            ret_val[str(row.iat[1])[:4]] = row.iat[grade_column_index]
+        elif str(row.iat[1]) == 'nan':
+            break
+    return ret_val
+
+
+
 def get_object_name(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
     iterator = routines.pop_loop_iterator()
@@ -29,13 +52,22 @@ def process_worksheet_data(data: dict[str, Any]) -> dict[str, Any]:
     columns: list = meta['header']
     default_note = meta['default_value_note']
     all_sheet_data = []
+    first = True
+    overall_grades = {}
     for sheet_name in data[constants.DEFAULT_IO_DATA_LABEL]:
+        current_overall_grade = np.nan
         df: pd.DataFrame = data[constants.DEFAULT_IO_DATA_LABEL][sheet_name]
+        if first:
+            overall_grades = extract_overall_grades(df)
+            first = False
+            continue
         year = df.columns[0]
+        if str(year)[:4] in overall_grades:
+            current_overall_grade = overall_grades[str(year)[:4]]
         df.reset_index()
         current_pos = 0
         current_build_part = ''
-        current_overall_note = 0
+        current_sum_note = 0
         current_location = ''
         is_single_row_was_written = False
         for nr, row in df.iterrows():
@@ -44,16 +76,16 @@ def process_worksheet_data(data: dict[str, Any]) -> dict[str, Any]:
             elif not math.isnan(row.iat[0]):
                 current_pos = row.iat[0]
                 current_build_part = row.iat[1]
-                current_overall_note = row.iat[8]
-                if current_overall_note == '..' or current_overall_note == '…':  # fix some typos
-                    current_overall_note = 0
+                current_sum_note = row.iat[8]
+                if current_sum_note == '..' or current_sum_note == '…':  # fix some typos
+                    current_sum_note = 0
                 is_single_row_was_written = False
                 continue
             else:
                 counter = 0
                 output_entry = [year, data['object_name'], data['year_of_building'], current_pos, current_build_part]
-                # if not current_overall_note:    # Correct the typo in the overall note from the next line
-                #    current_overall_note = row.iat[8]
+                # if not current_sum_note:    # Correct the typo in the sum note from the next line
+                #    current_sum_note = row.iat[8]
                 nr_of_injuries = row.iat[4]
                 if nr_of_injuries == 0:         # if the nr of injuries 0, then the note is 0
                     row.iat[8] = default_note
@@ -62,15 +94,16 @@ def process_worksheet_data(data: dict[str, Any]) -> dict[str, Any]:
                 else:
                     row.iat[2] = current_location
                 if str(row.iat[8]) == 'nan':   # if the note does not exist, use the overall note
-                    row.iat[8] = current_overall_note
+                    row.iat[8] = current_sum_note
                 for index in range(row.size):
                     if counter > 1:
                         output_entry.append(row.iat[index])
                     else:
                         counter += 1
-                output_entry.append(current_overall_note)
+                output_entry.append(current_sum_note)
                 output_entry.append(data['coords'][0])
                 output_entry.append(data['coords'][1])
+                output_entry.append(current_overall_grade)
                 if output_entry.count(np.nan) < 6:
                     all_sheet_data.append(output_entry)
                     is_single_row_was_written = True

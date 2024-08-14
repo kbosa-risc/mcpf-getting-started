@@ -11,7 +11,8 @@ def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     arg = {
         'input': constants.DEFAULT_IO_DATA_LABEL,
-        'left_value': None
+        'left_value': None,
+        'reset_index': False
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
@@ -24,9 +25,12 @@ def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
         if arg['left_value'] not in data:
             data[arg['left_value']] = data[arg['input']]
         else:
-            data[arg['left_value']] = (
-                    pd.concat([data[arg['left_value']], data[arg['input']]], ignore_index=False)
-                    .reset_index(drop=False))
+            if arg['reset_index']:
+                data[arg['left_value']] = (
+                    pd.concat([data[arg['left_value']], data[arg['input']]], ignore_index=False).reset_index(drop=False))
+            else:
+                data[arg['left_value']] = (
+                    pd.concat([data[arg['left_value']], data[arg['input']]], ignore_index=True))
 
     routines.set_meta_in_data(data, meta)
     return data
