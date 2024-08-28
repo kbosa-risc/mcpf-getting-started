@@ -1,13 +1,14 @@
-input_path: 'c:\Projects\risc_dse\data\input_files'
-output_path: 'c:\Projects\risc_dse\data\parquet_files'
+input_path: 'c:\Projects\risc_dse\data_fronius\input_files'
+output_path: 'c:\Projects\risc_dse\data_fronius\parquet_files'
 input_file_name: '*.tar.gz'
 entry_point: 'main_p'
 tmp_paths:
-  - 'c:\Projects\he_dse\data\csv_files\'
+  - 'c:\Projects\risc_dse\data_fronius\csv_files\'
 imports:
   - mcp_use_case_fronius.io_functions
   - mcp_use_case_fronius.transformation_functions
   - mcp_general_functions.mcp_general_io
+  - mcp_general_functions.mcp_general_transformations
 pipelines:
   - main_p:
     - list_dir:
@@ -15,10 +16,14 @@ pipelines:
     - loop: unzip_p
 
   - unzip_p:
-    - determine_end_date_from_filename: ~
+    - determine_end_date_from_filename_v2: ~
     - determine_output_filename: ~
     - unzip:
         - { 'output_into_next_tmp_folder': True }
+    - set_default_input_from_variable:
+        - { 'input_label': 'input_dir'}
+    - list_dir:
+        - { 'only_file_names_return': True, 'output_for_iteration': True }
     - processing_dirs_p: ~
 
     print_p:

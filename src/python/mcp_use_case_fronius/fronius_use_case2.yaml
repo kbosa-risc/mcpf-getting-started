@@ -1,9 +1,9 @@
-input_path: 'c:\Projects\risc_dse\data2\input_files\'
-output_path: 'c:\Projects\risc_dse\data2\parquet_files\'
+input_path: 'c:\Projects\risc_dse\data_fronius2\input_files\'
+output_path: 'c:\Projects\risc_dse\data_fronius2\parquet_files\'
 input_file_name: '*.tar.gz'
 
 tmp_paths:
-  - 'c:\Projects\he_meta\data2\unzipped_files\'
+  - 'c:\Projects\he_meta\data_fronius2\unzipped_files\'
 
 pipeline_extension:
   - read_input_data_p:

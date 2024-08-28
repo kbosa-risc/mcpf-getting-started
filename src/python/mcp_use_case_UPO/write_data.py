@@ -1,14 +1,14 @@
 import mcp_frm.pipeline_routines as routines
-import pandas as pd
+import os
 from typing import Any
 
 
 def write_eqe_sol1(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
     outdir = routines.get_current_tmp_dir(meta)
-    csv_name = outdir + '\\' + 'output_file'
+    csv_name = os.path.join(outdir, 'output_file')
     if 'output_filename' in meta:
-        csv_name = outdir + '\\' + meta['output_filename']
+        csv_name = os.path.join(outdir, meta['output_filename'])
     df = data['df']
     header_str = ""
     header_count = 1
@@ -81,9 +81,9 @@ def write_eqe_sol1(data: dict[str, Any]) -> dict[str, Any]:
 def write_eqe_sol2(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
     outdir = routines.get_current_tmp_dir(meta)
-    csv_name = outdir + '\\' + 'output_file'
+    csv_name = os.path.join(outdir, 'output_file')
     if 'output_filename' in meta:
-        csv_name = outdir + '\\' + meta['output_filename']
+        csv_name = os.path.join(outdir, meta['output_filename'])
     df = data['df']
     header_str = ""
     header_count = 1

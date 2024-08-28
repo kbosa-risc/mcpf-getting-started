@@ -21,6 +21,7 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'input_path': default_input_path,
         'relative_path': False,
+        'only_file_names_return': False,
         'output_for_iteration': False
     }
     # merging default values with current argument values
@@ -33,15 +34,15 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
     # specific code part
     if arg['relative_path']:
         if arg['input_path'] != '.':
-            arg['input_path'] = routines.get_current_input_dir(meta) + '\\' + arg['input_path']
+            arg['input_path'] = os.path.join(routines.get_current_input_dir(meta), arg['input_path'])
         else:
             arg['input_path'] = routines.get_current_input_dir(meta)
     data[arg['output']] = []
     if os.path.isdir(arg['input_path']):
         if len(os.listdir(arg['input_path'])) != 0:
             for file in os.listdir(arg['input_path']):
-                if arg['input_path'] != '.':
-                    data[arg['output']].append(arg['input_path'] + '\\' + file)
+                if arg['input_path'] != '.' and not arg['only_file_names_return']:
+                    data[arg['output']].append(os.path.join(arg['input_path'], file))
                 else:
                     data[arg['output']].append(file)
     if arg['output_for_iteration']:
@@ -82,12 +83,15 @@ def unzip(data: dict[str, Any]) -> dict[str, Any]:
 
     # specific code part
     if arg['file_name']:
-        arg['input_path'] = arg['input_path'] + '\\' + arg['file_name']
+        arg['input_path'] = os.path.join(arg['input_path'], arg['file_name'])
 
     if arg['relative_path']:
-        arg['input_path'] = routines.get_current_input_dir(meta) + '\\' + arg['input_path']
+        arg['input_path'] = os.path.join(routines.get_current_input_dir(meta), arg['input_path'])
     if arg['output_into_next_tmp_folder']:
-        arg['output_path'] = routines.get_current_tmp_dir(meta) + '\\' + arg['output_path']
+        arg['output_path'] = os.path.join(routines.get_current_tmp_dir(meta), arg['output_path'])
+
+    if not os.path.exists(arg['output_path']):
+        os.makedirs(arg['output_path'])
 
     # Extract all files to the current directory
     tar = tarfile.open(arg['input_path'], "r:gz")
@@ -126,10 +130,10 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
 
     # specific code part
     if arg['file_name']:
-        arg['input_path'] = arg['input_path'] + '\\' + arg['file_name']
+        arg['input_path'] = os.path.join(arg['input_path'], arg['file_name'])
 
     if arg['relative_path']:
-        arg['input_path'] = routines.get_current_input_dir(meta) + '\\' + arg['input_path']
+        arg['input_path'] = os.path.join(routines.get_current_input_dir(meta), arg['input_path'])
     data[arg['output']] = pd.read_csv(
                                 arg['input_path'],
                                 sep=arg['separator'],
@@ -195,10 +199,10 @@ def read_excel_worksheets(data: dict[str, Any]) -> dict[str, Any]:
 
     # specific code part
     if arg['file_name']:
-        arg['input_path'] = arg['input_path'] + '\\' + arg['file_name']
+        arg['input_path'] = os.path.join(arg['input_path'], arg['file_name'])
 
     if arg['relative_path']:
-        arg['input_path'] = routines.get_current_input_dir(meta) + '\\' + arg['input_path']
+        arg['input_path'] = os.path.join(routines.get_current_input_dir(meta), arg['input_path'])
     xls = pd.ExcelFile(arg['input_path'], engine=arg['engine'])
     data[arg['output']] = {}
     for nr, sheet_name in enumerate(xls.sheet_names):
@@ -234,10 +238,14 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
 
     # specific code part
     if arg['file_name']:
-        arg['output_path'] = arg['output_path'] + '\\' + arg['file_name']
+        arg['output_path'] = os.path.join(arg['output_path'], arg['file_name'])
 
     if arg['relative_path']:
-        arg['output_path'] = routines.get_current_tmp_dir(meta) + '\\' + arg['output_path']
+        arg['output_path'] = os.path.join(routines.get_current_tmp_dir(meta), arg['output_path'])
+
+    if not os.path.exists(os.path.dirname(arg['output_path'])):
+        os.makedirs(os.path.dirname(arg['output_path']))
+
     pq.write_table(pa.Table.from_pandas(data[arg['input']]), arg['output_path'])
     if arg['input'] != arg['output']:
         data[arg['output']] = data[arg['input']]
@@ -271,10 +279,14 @@ def write_csv(data: dict[str, Any]) -> dict[str, Any]:
 
     # specific code part
     if arg['file_name']:
-        arg['output_path'] = arg['output_path'] + '\\' + arg['file_name']
+        arg['output_path'] = os.path.join(arg['output_path'], arg['file_name'])
 
     if arg['relative_path']:
-        arg['output_path'] = routines.get_current_tmp_dir(meta) + '\\' + arg['output_path']
+        arg['output_path'] = os.path.join(routines.get_current_tmp_dir(meta), arg['output_path'])
+
+    if not os.path.exists(os.path.dirname(arg['output_path'])):
+        os.makedirs(os.path.dirname(arg['output_path']))
+
     data[arg['input']].to_csv(
                                 arg['output_path'],
                                 sep=arg['separator'],

@@ -30,7 +30,7 @@ def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
 
     if len(os.listdir(input_dir)) != 0:
         for file in os.listdir(input_dir):
-            tar = tarfile.open(input_dir + '\\' + file, "r:gz")
+            tar = tarfile.open(os.path.join(input_dir, file), "r:gz")
 
             # Extract all files to the current directory
             tar.extractall(output_dir)
@@ -38,7 +38,7 @@ def unzip_all(data: dict[str, Any]) -> dict[str, Any]:
             # Close the tar file
             tar.close()
 
-    dirs_of_input_files = list(map(lambda x: output_dir + '\\' + x, os.listdir(output_dir)))
+    dirs_of_input_files = list(map(lambda x: os.path.join(output_dir, x), os.listdir(output_dir)))
     routines.register_loop_iterator_list(dirs_of_input_files)
     # routines.set_current_output_dir_to_input_dir(meta)
     routines.set_meta_in_data(data, meta)
@@ -53,15 +53,32 @@ def determine_end_date_from_filename(data: dict[str, Any]) -> dict[str, Any]:
     else:
         data[constants.DEFAULT_IO_DATA_LABEL] = iterator
     meta['current_folder'] = iterator[iterator.find("Archive"):].replace(".tar.gz", "")
-    input_dir = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
+    input_dir = os.path.join(routines.get_current_tmp_dir(meta), meta['current_folder'])
     date_str = meta['current_folder'].replace("Archive_", "").replace("-csv", "").replace("-parquet", "")
     meta['end_date'] = date_str
-    files = os.listdir(input_dir)
     data['sample_rate_dict'] = {"name": [], "df": [], "srate": []}
+    files = os.listdir(input_dir)
     routines.register_loop_iterator_list(files)
     routines.set_meta_in_data(data, meta)
     return data
 
+
+def determine_end_date_from_filename_v2(data: dict[str, Any]) -> dict[str, Any]:
+    iterator = routines.pop_loop_iterator()
+    meta = routines.get_meta_data(data)
+    if not iterator:
+        iterator = data[constants.DEFAULT_IO_DATA_LABEL]
+    else:
+        data[constants.DEFAULT_IO_DATA_LABEL] = iterator
+    meta['current_folder'] = iterator[iterator.find("Archive"):].replace(".tar.gz", "")
+    input_dir = os.path.join(routines.get_current_tmp_dir(meta), meta['current_folder'])
+    date_str = meta['current_folder'].replace("Archive_", "").replace("-csv", "").replace("-parquet", "")
+    meta['end_date'] = date_str
+    data['sample_rate_dict'] = {"name": [], "df": [], "srate": []}
+
+    data['input_dir'] = input_dir
+    routines.set_meta_in_data(data, meta)
+    return data
 
 def determine_output_filename(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
@@ -74,7 +91,7 @@ def read_parquet_file(data: dict[str, Any]) -> dict[str, Any]:
     file = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
 
-    tmp_path = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
+    tmp_path = os.path.join(routines.get_current_tmp_dir(meta), meta['current_folder'])
 
     if file.__contains__(".parquet"):
         table = pq.read_table(tmp_path + '/' + file)
@@ -104,11 +121,11 @@ def read_parquet_file(data: dict[str, Any]) -> dict[str, Any]:
 def read_csv_file(data: dict[str, Any]) -> dict[str, Any]:
     file = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
-    input_dir = routines.get_current_tmp_dir(meta) + '\\' + meta['current_folder']
+    input_dir = os.path.join(routines.get_current_tmp_dir(meta), meta['current_folder'])
 
     if file.__contains__(".csv"):
         filename = file.replace(".csv", "")
-        temp_df = pd.read_csv(input_dir + '\\' + file, usecols=["time", "value"], delimiter=";")
+        temp_df = pd.read_csv(os.path.join(input_dir, file), usecols=["time", "value"], delimiter=";")
         temp_df = temp_df.rename(columns={"value": filename})
         data['sample_rate_dict']["name"].append(filename)
         data['sample_rate_dict']["df"].append(temp_df)
@@ -121,7 +138,9 @@ def read_csv_file(data: dict[str, Any]) -> dict[str, Any]:
 def write_to_parquet(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
     output_dir = routines.get_final_output_dir(meta)
-    pq.write_table(pa.Table.from_pandas(data['main_df']), output_dir + '/' + meta['output_file_name'])
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    pq.write_table(pa.Table.from_pandas(data['main_df']), os.path.join(output_dir, meta['output_file_name']))
 
     routines.set_meta_in_data(data, meta)
     return data
