@@ -45,8 +45,6 @@ For more information and for the additional requirements of the use cases see th
 	- loop: label_n											# a loop which iteratively execute the pipeline identifed with `label_n'
   ```  
 
-
-
 **Important remark**: In the current preliminary implementation of the mcp framework every python function listed in the yaml configuration must have a unique name, regardless of whether
 they are defined in different modules.
 

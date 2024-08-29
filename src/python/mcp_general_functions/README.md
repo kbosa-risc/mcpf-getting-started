@@ -65,29 +65,29 @@ before the end of the function, otherwise the changes are not stored.
 Additional arguments can be defined in the yaml config file for functions, e.g.:
 
 ```
-	- func_i:
-		- {'bool_argument': True }
+- func_i:
+	- {'bool_argument': True }
 ```
 
 These arguments are added to json string called *meta*, when the corresponding python function called. 
 They are stored as a dictionary under the label 'arguments' (use the constants 'ARGUMENTS' defined in [constans.py](constants.py)):
 
 ```
-	from typing import Any
-	from mcp_general_functions import constants
-	import mcp_frm.pipeline_routines as routines
+from typing import Any
+from mcp_general_functions import constants
+import mcp_frm.pipeline_routines as routines
+...
+def func_i(data: dict[str, Any]) -> dict[str, Any]:
+	meta = routines.get_meta_data(data)
+	if meta[constants.ARGUMENTS]:
+		arg = meta[constants.ARGUMENTS]
+	bool_argument = arg['bool_argument']
+
+	# specific code part
 	...
-	def func_i(data: dict[str, Any]) -> dict[str, Any]:
-		meta = routines.get_meta_data(data)
-		if meta[constants.ARGUMENTS]:
-			arg = meta[constants.ARGUMENTS]
-		bool_argument = arg['bool_argument']
 
-		# specific code part
-		...
-
-		routines.set_meta_in_data(data, meta)
-		return data
+	routines.set_meta_in_data(data, meta)
+	return data
 ```
 
 **Important remark**: Before the end of the function the call *routines.set_meta_in_data(data, meta)* must be executed to clean up the *meta* data from the current arguments. 
@@ -127,23 +127,26 @@ once for the members of the loop kernel via the function routines.pop_loop_itera
 If the framework finds a loop in the yaml configuration (see [../mcp_frm/README.md](../mcp_frm/README.md)), it executes the specified pipeline sequentially on each element of the list of 
 iterators registered at latest.
 
-If there is no registered list of iterators or its is empty, the loop kernel will not be executed at all. The framework allows to define embedded loops in a yaml configuration, for instance lets regard the following hypotetic pipeline which is going to list the contet of the sub folders of the 
-input folders given in the **input_path** element.
+If there is no registered list of iterators or its is empty, the loop kernel will not be executed at all. 
+The framework allows to define embedded loops in a yaml configuration, for instance lets regard the following pipeline which is 
+going to list the content of the input folder given in the **input_path** element and of its sub-folders 
+(for the the complete yaml configuration, see the [getting started use case](../mcp_use_case_getting_started/README.md)).
 
 ```
 pipelines:
   - main_p:
-    - list_dir:
-        - { relative_path: True, output_for_iteration: True }
-	- loop: list_input_dirs_p
+      - list_dir:
+          - { relative_path: True, output_for_iteration: True }
+      - loop: list_input_dirs_p
 
-  - list_input_dirs_pL
-	- list_dir:
-        - { 'only_file_names_return': True, 'output_for_iteration': True }
-    - loop: processing_files_p
-	
+  - list_input_dirs_p:
+      - processing_files_p: ~
+      - list_dir:
+          - { 'only_file_names_return': True, 'output_for_iteration': True }
+      - loop: processing_files_p
+
   - processing_files_p:
-	- print: ~
+      - print_to_stdout: ~
 ```
 
 ### Accessing to the current iterator within the loop kernel

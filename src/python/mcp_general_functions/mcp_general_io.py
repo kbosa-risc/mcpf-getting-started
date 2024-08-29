@@ -15,15 +15,17 @@ def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:
 
     # default_arguments_values
     arg = {
-        'input': constants.DEFAULT_IO_DATA_LABEL
+        'input': constants.DEFAULT_IO_DATA_LABEL,
+        'output': constants.DEFAULT_IO_DATA_LABEL
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
         arg = arg | meta[constants.ARGUMENTS]
     # if the function part of a loop
     if iterator:
-        arg['input'] = iterator
-    print(arg['input'])
+        data[arg['input']] = iterator
+    print(data[arg['input']])
+    data[arg['output']] = data[arg['input']]
     routines.set_meta_in_data(data, meta)
     return data
 

@@ -1,5 +1,5 @@
 
-# <ins>M</ins>inimalist <ins>C</ins>onfigurable (Code) <ins>P</ins>ipeline  *(mcp)* Framework
+# Minimalist Configurable (Code) Pipeline  *(mcp)* Framework
 
 ---
 
@@ -43,7 +43,8 @@ or
 
 ## Getting Started
 
-Execute your first pipeline from the directory *mcp_frm*, which will list the content of the parent directory on the standard output:
+To Execute your first pipeline issue the following statement from the directory *mcp_frm*, which will print the content of the parent directory 
+and of its sub-directories of the parent directory to the standard output:
 
 ```
 ./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml	

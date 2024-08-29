@@ -10,6 +10,7 @@ pipelines:
       - loop: list_input_dirs_p
 
   - list_input_dirs_p:
+      - processing_files_p: ~
       - list_dir:
           - { 'only_file_names_return': True, 'output_for_iteration': True }
       - loop: processing_files_p
