@@ -209,7 +209,7 @@ if __name__ == "__main__":
             raise FileNotFoundError("Error: config file " + arg + " does not exist.")
     c = load_pipeline_config(sys.argv)
     if not c.imports or not c.pipelines or not c.entry_point:
-        raise NotImplementedError("Error: Missing 'imports', 'pipeline' or 'entry_point' in the config file.")
+        raise NotImplementedError("Error: Missing 'imports', 'pipelines' or 'entry_point' in the config file.")
     else:
         imported_modules = {}
         for module_name in c.imports:

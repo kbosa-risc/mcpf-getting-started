@@ -1,0 +1,18 @@
+input_path: &base_dir '..'
+output_path: *base_dir
+entry_point: 'main_p'
+imports:
+  - mcp_general_functions.mcp_general_io
+pipelines:
+  - main_p:
+      - list_dir:
+          - { relative_path: True, output_for_iteration: True }
+      - loop: list_input_dirs_p
+
+  - list_input_dirs_p:
+      - list_dir:
+          - { 'only_file_names_return': True, 'output_for_iteration': True }
+      - loop: processing_files_p
+
+  - processing_files_p:
+      - print_to_stdout: ~

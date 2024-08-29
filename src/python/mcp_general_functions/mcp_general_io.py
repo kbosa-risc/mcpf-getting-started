@@ -8,6 +8,26 @@ import pyarrow.parquet as pq
 import pyarrow as pa
 
 
+def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:
+    # general code part 2/1
+    iterator = routines.pop_loop_iterator()
+    meta = routines.get_meta_data(data)
+
+    # default_arguments_values
+    arg = {
+        'input': constants.DEFAULT_IO_DATA_LABEL
+    }
+    # merging default values with current argument values
+    if meta[constants.ARGUMENTS]:
+        arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    if iterator:
+        arg['input'] = iterator
+    print(arg['input'])
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
 def list_dir(data: dict[str, Any]) -> dict[str, Any]:
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
