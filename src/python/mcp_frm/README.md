@@ -37,12 +37,12 @@ For more information and for the additional requirements of the use cases see th
 * **pipelines**: A list of pipelines. A pipeline is a labeled list of other pipelines, python functions or as special element any word starting with the prefix *loop*. The syntax of elements of a pipeline is the following
   (for more information see [../mcp_general_functions/README.md](../mcp_general_functions/README.md)):  
   ```
-  - label_k:														       # name of the pipeline
-	- label_m: ~														   # reference to another pipeline, ~ (tilde) is required
-	- function_i: ~														# python function without additional argument, ~ (tilde) is required
-	- function_j: 														 # python function without additional argument, for requirements
+  - label_k:												# name of the pipeline
+	- label_m: ~											# reference to another pipeline, ~ (tilde) is required
+	- function_i: ~											# python function without additional argument, ~ (tilde) is required
+	- function_j: 											# python function without additional argument, for requirements
 		{string_arg1: 'some_string', bool_arg2: True, ...}
-	- loop: label_n														# a loop which iteratively execute the pipeline identifed with `label_n'
+	- loop: label_n											# a loop which iteratively execute the pipeline identifed with `label_n'
   ```  
 
 

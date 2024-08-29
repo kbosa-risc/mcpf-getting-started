@@ -33,17 +33,20 @@ see the directory [**mcp_general_functions**](mcp_general_functions/README.md);
 
 ### Examples
 
-       ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
-	   or
-	   ./pipeline_runtime.py  
-	        ../mcp_use_case_fronius/fronius_use_case2.yaml  
-            ../mcp_use_case_fronius/fronius_use_case1.yaml
-	
+```
+./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
+or
+./pipeline_runtime.py  
+	../mcp_use_case_fronius/fronius_use_case2.yaml  
+	../mcp_use_case_fronius/fronius_use_case1.yaml
+```
+
 ## Getting Started
 
 Execute your first pipeline from the directory *mcp_frm*, which will list the content of the parent directory on the standard output:
+
 ```
-	./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml	
+./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml	
 ```
 
 For particular yaml configuration examples, see the use cases. For coding guldelines and best practices, see [../mcp_general_functions/README.md](../mcp_general_functions/README.md)
