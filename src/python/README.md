@@ -50,4 +50,4 @@ and of its sub-directories of the parent directory to the standard output:
 ./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml	
 ```
 
-For particular yaml configuration examples, see the use cases. For coding guldelines and best practices, see [../mcp_general_functions/README.md](../mcp_general_functions/README.md)
+For particular yaml configuration examples, see the use cases. For coding guldelines and best practices, see [mcp_general_functions/README.md](mcp_general_functions/README.md)
