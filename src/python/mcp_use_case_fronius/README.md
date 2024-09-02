@@ -13,6 +13,8 @@ The input data must be present locally (see [../../../../data_fronius/input_file
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
 
+The output is going to be generated into the location given in the part *output_path* of the yaml configuration.
+
 ## How to Start
 
 Assuming you are in the directory ./mcp_frm:
@@ -20,6 +22,8 @@ Assuming you are in the directory ./mcp_frm:
 ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
 
 # Fronius 1st Use Case 2nd Version: Resampling and Merging CSV Data
+
+## Description
 
 It is a refactored version of the previous use case (see the yaml configuration file [fronius_use_case1b.yaml](fronius_use_case1b.yaml)), 
 where some generally written python fuctions are used to demonstrate code resusability, e.g.:
@@ -34,6 +38,8 @@ The input data must be present locally (see [../../../../data_fronius/input_file
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
 
+The output is going to be generated into the location given in the part *output_path* of the yaml configuration.
+
 ## How to Start
 
 Assuming you are in the directory ./mcp_frm:
@@ -42,7 +48,9 @@ Assuming you are in the directory ./mcp_frm:
 
 # Fronius 2nd Use Case: Resampling and Merging Parquet Data
 
-It is a modified version of the previous use case. It is just overwrite the routine specidied in the one of the previous yaml config file (it is even, which one) to 
+## Description
+
+It is a modified version of the previous use case. It overwrites the routine specified in the one of the previous yaml config file (it is even, which one) to 
 read the input dat from parquet file, see the yaml configuration file [fronius_use_case2.yaml](fronius_use_case2.yaml):
 
 ```
@@ -60,12 +68,14 @@ pipeline_extension:
 
 ## Requirements
 
-First of since this use case use just pipeline extension, it requires one of the yaml configuration files from the 1st use case 
+First of all, since this use case is a pipeline extension, it requires one of the yaml configuration files from the 1st use case 
 ([fronius_use_case1.yaml](fronius_use_case1.yaml) or [fronius_use_case1b.yaml](fronius_use_case1b.yaml)).
 
 The input data must be present locally (see [../../../../data_fronius2/input_files](../../../../data_fronius2/input_files)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
+
+The output is going to be generated into the location given in the part *output_path* of the yaml configuration.
 
 ## How to Start
 
