@@ -43,11 +43,11 @@ or
   (for more information see [../mcp_general_functions/README.md](../mcp_general_functions/README.md)):  
   ```
   - label_k:												# name of the pipeline
-	- label_m: ~											# reference to another pipeline, ~ (tilde) is required
-	- function_i: ~											# python function without additional argument, ~ (tilde) is required
-	- function_j: 											# python function without additional argument, for requirements
+	- label_m: ~												# reference to another pipeline, ~ (tilde) is required
+	- function_i: ~											# python function without any additional argument, ~ (tilde) is required
+	- function_j: 											# python function with additional arguments
 		{string_arg1: 'some_string', bool_arg2: True, ...}
-	- loop: label_n											# a loop which iteratively execute the pipeline identified with `label_n'
+	- loop: label_n											# a loop which iteratively executes the pipeline identified with `label_n'
   ```  
 
 **Important remark**: In the current preliminary implementation of the mcp framework every python function listed in the yaml configuration must have a unique name, regardless of whether
