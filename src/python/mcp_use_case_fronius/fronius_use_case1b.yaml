@@ -26,9 +26,6 @@ pipelines:
         - { 'only_file_names_return': True, 'output_for_iteration': True }
     - processing_dirs_p: ~
 
-    print_p:
-    - print_all: ~
-
     processing_dirs_p:
     - loop_processing_csvs: read_input_data_p
     - resample_p: ~

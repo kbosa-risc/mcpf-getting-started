@@ -1,5 +1,5 @@
 
-# Usage of <ins>M</ins>inimalist <ins>C</ins>onfigurable (Code) <ins>P</ins>ipeline  *(mcp)* Framework
+# Usage of Minimalist Configurable (Code) Pipeline *(mcp)* Framework
 
 The mcp framework based on among others the folloving python modules:
 - lasagna,

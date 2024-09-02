@@ -17,7 +17,8 @@ def test1(data: dict[str, Any]) -> dict[str, Any]:
 Other functions, which are called only from python code should not fullfil this requirement.
 
 ### Best Practice
-To facilitate the general re-usability of your code, use a default label (e.g.: see DEFAULT_IO_DATA_LABEL in [constans.py](constants.py) for sotring the actual input data in the passed though dictionary *data*. 
+To facilitate the general re-usability of your code, use always use the same (default) label (e.g.: see DEFAULT_IO_DATA_LABEL in [constans.py](constants.py) 
+for storing the current input data in the passed though dictionary *data*. 
 
 ```
 from typing import Any
@@ -57,7 +58,7 @@ def func_i(data: dict[str, Any]) -> dict[str, Any]:
 	return data
 ```
 
-**Important remark**: The content of the meta can be updated by any function, but in such a case the call *routines.set_meta_in_data(data, meta)* must be executed 
+**Important remark**: The content of the meta can be updated from the code, but in such a case the call *routines.set_meta_in_data(data, meta)* must be executed 
 before the end of the function, otherwise the changes are not stored. 
 
 ## Configurable Arguments
@@ -90,13 +91,14 @@ def func_i(data: dict[str, Any]) -> dict[str, Any]:
 	return data
 ```
 
-**Important remark**: Before the end of the function the call *routines.set_meta_in_data(data, meta)* must be executed to clean up the *meta* data from the current arguments. 
+**Important remark**: Always access to the content of *meta data* only via the provided *routines.get_meta_data* function otherwise the 
+arguments specified for the current function in the yaml config file will not be set.
 
 ## How loops work in the pipeline
 
 ### Registering list of data for iterative
 
-You can registered a list of element (let's call it *list of iterators*), on which you would like to execute a loop. 
+You can register a list of element (let's call it *list of iterators*), on which you would like to execute a loop. 
 
 ```
 from typing import Any
@@ -117,7 +119,7 @@ def function_i(data: dict[str, Any]) -> dict[str, Any]:
 ```
 
 If sooner or later a loop will come in the pipeline configuration after this step above, 
-then the loop will go through all the elements of the given lists. The framework will provide each of them 
+then the loop will go through all the elements of the given list. The framework will provide each element of the list 
 once for the members of the loop kernel via the function routines.pop_loop_iterator(data), see below.
 
 **Important remark**: The data type of the enumerated iterator data required to be python list (it is planned to relax this constrains with numpy arrays and/or pandas series in the future).
@@ -165,13 +167,14 @@ def test2_loop_kernel(data: dict[str, Any]) -> dict[str, Any]:
 	return data
 ```
 
-**Important remark**: Each iterator is availble only once from the root kernel pipeline (Subsequent cases the *function routines.pop_loop_iterator* returns with 'None' value).
+**Important remark**: Each iterator is available only once from the root kernel pipeline (Subsequent cases the *function routines.pop_loop_iterator* returns with 'None' value).
 
 ## Generaly Implemented Routines
 
 ### Best practice
 
-A python function can be implemented in a general way that they are prepared to use either default input, configurable arguments or iterator, if they are available: 
+Python functions can be implemented in a general way, such that they can accept either default input, configurable arguments, 
+or iterator as input, if any of these are available::
 
 ```
 from typing import Any
