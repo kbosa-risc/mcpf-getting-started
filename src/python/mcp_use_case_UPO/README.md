@@ -24,7 +24,7 @@ Assuming you are in the directory ./mcp_frm:
 
 ## Description
 
-It is a modified version of the previous use case. It just overwrites three routines specidied 
+It is a modified version of the previous use case. It just overwrites three routines specified 
 in the yaml config file of the previous use case to modify the calculation as well as the output format, 
 see the yaml configuration file [upo_use_case2.yaml](upo_use_case2.yaml):
 

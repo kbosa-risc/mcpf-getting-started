@@ -9,7 +9,7 @@ written python libraries, see the yaml configuration file [fronius_use_case1.yam
 
 ## Requirements
 
-The input data must be present locally (see [../../../../data_fronius/input_files](../../../../data_fronius/input_files)) and their location must be given 
+The input data must be present (see [../../../../data_fronius/input_files](../../../../data_fronius/input_files)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
 
@@ -34,7 +34,7 @@ where some generally written python fuctions are used to demonstrate code resusa
 
 ## Requirements
 
-The input data must be present locally (see [../../../../data_fronius/input_files](../../../../data_fronius/input_files)) and their location must be given 
+The input data must be present(see [../../../../data_fronius/input_files](../../../../data_fronius/input_files)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
 
@@ -71,7 +71,7 @@ pipeline_extension:
 First of all, since this use case is a pipeline extension, it requires one of the yaml configuration files from the 1st use case 
 ([fronius_use_case1.yaml](fronius_use_case1.yaml) or [fronius_use_case1b.yaml](fronius_use_case1b.yaml)).
 
-The input data must be present locally (see [../../../../data_fronius2/input_files](../../../../data_fronius2/input_files)) and their location must be given 
+The input data must be present (see [../../../../data_fronius2/input_files](../../../../data_fronius2/input_files)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
 

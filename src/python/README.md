@@ -28,8 +28,7 @@ see the directory [**mcp_general_functions**](mcp_general_functions/README.md);
 # Synopsis
 
 >      pipeline_runtime.py  
->         [addapted_use_case_config_n.yaml ... addapted_use_case_config_n.yaml] 
->         basic_use_case_configuration.yaml
+>         [adapted_use_case_configuration.yaml] basic_use_case_configuration.yaml
 
 ### Examples
 
