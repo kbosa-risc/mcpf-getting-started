@@ -1,5 +1,5 @@
 
-# Minimalist Configurable (Code) Pipeline  *(mcp)* Framework
+# Introduction into the Minimalist Configurable (Code) Pipeline  *(mcp)* Framework
 
 ---
 

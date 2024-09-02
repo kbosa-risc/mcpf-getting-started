@@ -1,5 +1,5 @@
 
-# Coding Guidelines, Best Practices
+# Coding Guidelines and Best Practices
 
 ## Basic requirements
 
