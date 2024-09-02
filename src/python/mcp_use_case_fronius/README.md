@@ -2,7 +2,7 @@
 
 ## Description
 
-It reads same measured data from csv files recorded with various sampling rates, then resamples and merges them.
+It reads the same measured data from csv files recorded with various sampling rates, then resamples and merges them.
 This was the first use case ever written for the *minimalist configurable pipeline (mcp) framework*, therefore it does not use generally 
 written python libraries, see the yaml configuration file [fronius_use_case1.yaml](fronius_use_case1.yaml)
 
@@ -17,16 +17,18 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory ./mcp_frm:
+Assuming you are in the directory *mcp_frm*:
 
+```
 ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
+```
 
 # Fronius 1st Use Case 2nd Version: Resampling and Merging CSV Data
 
 ## Description
 
 It is a refactored version of the previous use case (see the yaml configuration file [fronius_use_case1b.yaml](fronius_use_case1b.yaml)), 
-where some generally written python fuctions are used to demonstrate code resusability, e.g.:
+where some generally written python functions are used to demonstrate code reusability, e.g.:
 - *unzip*, it extracts a file given either via the default input stream, as argument in the yaml config file or as loop iterator.
 - *list_dir*, it lists the path given either via the default input stream, as argument in the yaml config file or as loop iterator.
 - *set_default_input_from_variable*, it sets the default input from the yaml config file.
@@ -34,7 +36,7 @@ where some generally written python fuctions are used to demonstrate code resusa
 
 ## Requirements
 
-The input data must be present(see [../../../../data_fronius/input_files](../../../../data_fronius/input_files)) and their location must be given 
+The input data must be present (see [../../../../data_fronius/input_files](../../../../data_fronius/input_files)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the parts *output_path* and *tmp_path* of the yaml configuration are going to be created on the local disc.
 
@@ -42,9 +44,11 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory ./mcp_frm:
+Assuming you are in the directory *mcp_frm*:
 
+```
 ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1b.yaml
+```
 
 # Fronius 2nd Use Case: Resampling and Merging Parquet Data
 
@@ -79,10 +83,12 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory ./mcp_frm, you have two options:
+Assuming you are in the directory *mcp_frm*, you have two options:
 
+```
 ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1.yaml
-
+```
 or
-
+```
 ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1b.yaml
+```

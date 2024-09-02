@@ -3,7 +3,7 @@
 
 ---
 
-The main purpose of the mcp framework is to minimize the effort to re-implement the similar issues over and over again for various use cases. To achieve this it provides the following:
+The main purpose of the mcp framework is to minimize the effort to re-implement the similar issues over and over again for various use cases. To achieve this, it provides the following:
  - A framework which is able to execute specified python functions in a pipeline/workflow defined in a yaml configuration file. 
 	- The composed code pipeline can be decomposed to child-pipelines, 
 which may in turn include further child-pipelines or python functions.
@@ -16,7 +16,7 @@ which may in turn include further child-pipelines or python functions.
 This directory contains the following:
 - the source of mcp framework, see the directory [**mcp_frm**](mcp_frm/README.md);
 - some coding guidelines/templates, see the directory as well as 
-a tiny collection of some generaly (re-)usable functions (read/write csv/parquet etc.),
+a tiny collection of some generally (re-)usable functions (read/write csv/parquet etc.),
 see the directory [**mcp_general_functions**](mcp_general_functions/README.md);
 - a very simple pipeline configuration for getting started, see the directory [**mcp_use_case_getting_started**](mcp_use_case_getting_started/README.md);
 - re-implemented fronius use case (re-sampling csv/parquet data and write into parquet), see the directory [**mcp_use_case_fronius**](mcp_use_case_fronius/README.md);
@@ -32,9 +32,13 @@ see the directory [**mcp_general_functions**](mcp_general_functions/README.md);
 
 ### Examples
 
+Assuming you are in the directory *mcp_frm*:
+
 ```
 ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
+```
 or
+```
 ./pipeline_runtime.py  
 	../mcp_use_case_fronius/fronius_use_case2.yaml  
 	../mcp_use_case_fronius/fronius_use_case1.yaml
@@ -49,4 +53,4 @@ and of its sub-directories of the parent directory to the standard output:
 ./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml	
 ```
 
-For particular yaml configuration examples, see the use cases. For coding guldelines and best practices, see [mcp_general_functions/README.md](mcp_general_functions/README.md)
+For particular yaml configuration examples, see the use cases. For coding guidelines and best practices, see [mcp_general_functions/README.md](mcp_general_functions/README.md)

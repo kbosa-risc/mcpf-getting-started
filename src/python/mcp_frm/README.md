@@ -1,7 +1,7 @@
 
 # Usage of Minimalist Configurable (Code) Pipeline *(mcp)* Framework
 
-The mcp framework based on among others the folloving python modules:
+The mcp framework based on among others the following python modules:
 - lasagna,
 - toolz,
 - json.
@@ -16,11 +16,16 @@ For more information and for the additional requirements of the use cases see th
 
 ### Examples
 
-       ./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
-	   or
-	   ./pipeline_runtime.py  
-	        ../mcp_use_case_fronius/fronius_use_case2.yaml  
-            ../mcp_use_case_fronius/fronius_use_case1.yaml
+Assuming you are in the directory *mcp_frm*:
+
+```
+./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
+```
+or
+```
+./pipeline_runtime.py  
+	       ../mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1.yaml
+```
 	   
 ## Basic (Use Case) Configuration
 
@@ -42,7 +47,7 @@ For more information and for the additional requirements of the use cases see th
 	- function_i: ~											# python function without additional argument, ~ (tilde) is required
 	- function_j: 											# python function without additional argument, for requirements
 		{string_arg1: 'some_string', bool_arg2: True, ...}
-	- loop: label_n											# a loop which iteratively execute the pipeline identifed with `label_n'
+	- loop: label_n											# a loop which iteratively execute the pipeline identified with `label_n'
   ```  
 
 **Important remark**: In the current preliminary implementation of the mcp framework every python function listed in the yaml configuration must have a unique name, regardless of whether
@@ -52,7 +57,7 @@ For particular yaml configuration examples, see the use cases.
 
 ## Adapted (Use Case) Configuration
 
-In adapted configuration you can overwrite all the part of the basic/previously adapted configuration, except the part initiated with the key word *pipelines*. Instead of the key word *pipelines* you can use *pipeline_extension*.
+In adapted configuration you can overwrite all the parts of the basic/previously adapted configuration, except the part initiated with the key word *pipelines*. Instead of the key word *pipelines* you can use *pipeline_extension*.
 In the section 'pipeline_extension' of the configuration you can redefined any part/child-pipeline given in the basic configuration by reusing its name. For particular examples see:
 
 - [../mcp_use_case_fronius/fronius_use_case2.yaml](../mcp_use_case_fronius/fronius_use_case2.yaml),

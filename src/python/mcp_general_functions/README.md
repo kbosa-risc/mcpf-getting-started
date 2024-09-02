@@ -3,7 +3,7 @@
 
 ## Basic requirements
 
-If a python function is going to appear in yaml pipeline configuration, its signature and retun value must be the following:
+If a python function is going to appear in yaml pipeline configuration, its signature and return value must be the following:
 
 ```
 from typing import Any
@@ -14,7 +14,7 @@ def test1(data: dict[str, Any]) -> dict[str, Any]:
 	return data  
 ``` 
 
-Other functions, which are called only from python code should not fullfil this requirement.
+Other functions, which are called only from python code should not fulfill this requirement.
 
 ### Best Practice
 To facilitate the general re-usability of your code, use always use the same (default) label (e.g.: see DEFAULT_IO_DATA_LABEL in [constans.py](constants.py) 
@@ -40,7 +40,7 @@ By default the dictionary *data* contains a json string called *meta* which may 
 * **db_configs** and
 * key-value pairs defined in the part **further_configuration** in the yaml configuration.
 
-Additionally the key value pairs defined by the developer can be also stored here. 
+Additionally, the key value pairs defined by the developer can be also stored here. 
 
 ```
 from typing import Any
@@ -98,7 +98,7 @@ arguments specified for the current function in the yaml config file will not be
 
 ### Registering list of data for iterative
 
-You can register a list of element (let's call it *list of iterators*), on which you would like to execute a loop. 
+You can register a list of elements (let's call it *list of iterators*), on which you would like to execute a loop. 
 
 ```
 from typing import Any
@@ -122,14 +122,14 @@ If sooner or later a loop will come in the pipeline configuration after this ste
 then the loop will go through all the elements of the given list. The framework will provide each element of the list 
 once for the members of the loop kernel via the function routines.pop_loop_iterator(data), see below.
 
-**Important remark**: The data type of the enumerated iterator data required to be python list (it is planned to relax this constrains with numpy arrays and/or pandas series in the future).
+**Important remark**: The data type of the enumerated iterator data required to be python list (it is planned to relax these constrains with numpy arrays and/or pandas series in the future).
 
 ### Loop and loop kernel in the yaml configuration
 
 If the framework finds a loop in the yaml configuration (see [../mcp_frm/README.md](../mcp_frm/README.md)), it executes the specified pipeline sequentially on each element of the list of 
 iterators registered at latest.
 
-If there is no registered list of iterators or its is empty, the loop kernel will not be executed at all. 
+If there is no registered list of iterators or it is empty, the loop kernel will not be executed at all. 
 The framework allows to define embedded loops in a yaml configuration, for instance lets regard the following pipeline which is 
 going to list the content of the input folder given in the **input_path** element and of its sub-folders 
 (for the the complete yaml configuration, see the [getting started use case](../mcp_use_case_getting_started/README.md)).
@@ -174,7 +174,7 @@ def test2_loop_kernel(data: dict[str, Any]) -> dict[str, Any]:
 ### Best practice
 
 Python functions can be implemented in a general way, such that they can accept either default input, configurable arguments, 
-or iterator as input, if any of these are available::
+or iterator as input, if any of these are available:
 
 ```
 from typing import Any
@@ -205,7 +205,7 @@ def func_with_arguments_given_in_config(data: dict[str, Any]) -> dict[str, Any]:
 
 ### Already implemented routines
 
-Some generaly implemented logics (e.g.: reading/writing csv/parquet files or accessing influx/timescale db) have already been available in the following source files:
+Some generally implemented logics (e.g.: reading/writing csv/parquet files or accessing influx/timescale database) have already been available in the following source files:
 * [mcp_general_io.py](mcp_general_io.py)
 * [mcp_general_db.py](mcp_general_db.py)
 

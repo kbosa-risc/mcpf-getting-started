@@ -3,13 +3,13 @@
 
 ## Description
 
-It uses the generalised implementation of only two python functions.
+It uses the generalized implementation of only two python functions.
 They are *list_dir* and *print_to_stdout* and they are located in [mcp_general_io.py](../mcp_general_functions/mcp_general_io.py)
 
 This use case simply list of the content of the given input folder (*input_path* in the configuration below) and of its subfolders (see the yaml configuration below). 
 For achieving this, 
 1. it creates a list about the content of the given input folder and start a loop which go through this list;
-1. It print out the current element, then it create subsequent list for an embedded loop (if the current element is not a directory it cretes an empty list); and
+1. It print out the current element, then it creates subsequent list for an embedded loop (if the current element is not a directory it creates an empty list); and
 1. In an inner loop, print out the current element of the second list.
 
 Content of the configuration file:
@@ -43,7 +43,7 @@ None
 
 ## How to Start
 
-Assuming you are in the directory ./mcp_frm:
+Assuming you are in the directory *mcp_frm*:
 
 ```
 ./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml

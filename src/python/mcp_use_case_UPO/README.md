@@ -1,9 +1,9 @@
 
-# UPO 1st Use Case, Output I: Calc. EQE Percentage and Ingegral Current Density
+# UPO 1st Use Case, Output I: Calc. EQE Percentage and Integral Current Density
 
 ## Description
 
-It reads some csv data, performs some calculation and provide the outcome in a well defined output format
+It reads some csv data, performs some calculation and provide the outcome in a well-defined output format
 
 ## Requirements
 
@@ -15,10 +15,11 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory ./mcp_frm:
+Assuming you are in the directory *mcp_frm*:
 
+```
 ./pipeline_runtime.py ../mcp_use_case_UPO/upo_use_case1.yaml
-
+```
 
 # UPO 2nd Use case, Output II: Calc. EQE Percentage
 
@@ -47,8 +48,8 @@ pipeline_extension:
 
 ## Requirements
 
-First of all, since this use case is a pipeline extension, it requires one of the yaml configuration files from the 1st use case 
-([upo_use_case1.yaml](upo_use_case1.yaml).
+First of all, since this use case is a pipeline extension, it requires the yaml configuration file of the 1st use case 
+[upo_use_case1.yaml](upo_use_case1.yaml).
 
 The input data must be present in the same directory structure (see [data](data)) and their location must be given 
 in the part *input_path* of the yaml configuration.
@@ -59,6 +60,8 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory ./mcp_frm:
+Assuming you are in the directory *mcp_frm*:
 
+```
 ./pipeline_runtime.py ../mcp_use_case_UPO/upo_use_case2.yaml ../mcp_use_case_UPO/upo_use_case1.yaml
+```
