@@ -23,7 +23,7 @@ see the directory [**mcp_general_functions**](mcp_general_functions/README.md);
 - re-implemented UPO use case, see the directory [**mcp_use_case_UPO**](mcp_use_case_UPO/README.md);
 - re-implemented sim2influx use case (writing csv data into influx/timescale db), see the directory [**mcp_use_case_sim2infux**](mcp_use_case_sim2influx/README.md);
 - the source of the santub use case (converting data on excel worksheet to parquet), see the directory [**mcp_santub**](mcp_santub/README.md); and
-- the source tiny dotnet use case to demonstrate how to wrapped and re-use c# code (e.g.: from the EVIS project), see the directory [**mcp_use_dot_net**](mcp_use_case_dot_net/README.md)
+- the source tiny dotnet use case to demonstrate how to wrapped and re-use c# code (e.g.: from the EVIS project), see the directory [**mcp_use_case_dot_net**](mcp_use_case_dot_net/README.md)
 
 # Synopsis
 
