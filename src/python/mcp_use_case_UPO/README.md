@@ -6,7 +6,7 @@ It reads some csv data, performs some calculation and provide the outcome in a w
 
 ## Requirements
 
-The input data must be present locally in the same directory structures (see [data](data)) and their location must be given 
+The input data must be present in the same directory structure (see [data](data)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the part *output_path* of the yaml configuration are going to be created on the local disc.
 
@@ -49,7 +49,7 @@ pipeline_extension:
 First of all, since this use case is a pipeline extension, it requires one of the yaml configuration files from the 1st use case 
 ([upo_use_case1.yaml](upo_use_case1.yaml).
 
-The input data must be present locally in the same directory structures (see [data](data)) and their location must be given 
+The input data must be present in the same directory structure (see [data](data)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the part *output_path* of the yaml configuration are going to be created on the local disc.
 
@@ -57,5 +57,7 @@ The output is going to be generated into the location given in the part *output_
 
 
 ## How to Start
+
+Assuming you are in the directory ./mcp_frm:
 
 ./pipeline_runtime.py ../mcp_use_case_UPO/upo_use_case2.yaml ../mcp_use_case_UPO/upo_use_case1.yaml
