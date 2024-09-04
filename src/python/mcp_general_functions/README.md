@@ -17,7 +17,7 @@ def test1(data: dict[str, Any]) -> dict[str, Any]:
 Other functions, which are called only from python code should not fulfill this requirement.
 
 ### Best Practice
-To facilitate the general re-usability of your code, use always use the same (default) label (e.g.: see DEFAULT_IO_DATA_LABEL in [constans.py](constants.py) 
+To facilitate the general re-usability of your code, use always the same (default) label (e.g.: see DEFAULT_IO_DATA_LABEL in [constants.py](constants.py) 
 for storing the current input data in the passed though dictionary *data*. 
 
 ```
@@ -94,9 +94,12 @@ def func_i(data: dict[str, Any]) -> dict[str, Any]:
 **Important remark**: Always access to the content of *meta data* only via the provided *routines.get_meta_data* function otherwise the 
 arguments specified for the current function in the yaml config file will not be set.
 
-## How loops work in the pipeline
+## How loops work in the pipeline 
 
-### Registering list of data for iterative
+The main purpose of loops in a (code) pipeline defined in yaml configuration is to execute the same piece of code 
+(child-pipeline) on each elements of a given list.
+
+### Registering list of data for a loop 
 
 You can register a list of elements (let's call it *list of iterators*), on which you would like to execute a loop. 
 
@@ -126,10 +129,10 @@ once for the members of the loop kernel via the function routines.pop_loop_itera
 
 ### Loop and loop kernel in the yaml configuration
 
-If the framework finds a loop in the yaml configuration (see [../mcp_frm/README.md](../mcp_frm/README.md)), it executes the specified pipeline sequentially on each element of the list of 
-iterators registered at latest.
+If the framework finds a loop in the yaml configuration (see [../mcp_frm/README.md](../mcp_frm/README.md)), it executes the specified pipeline sequentially on each 
+element of the registered list. 
+If there is no registered list of iterators or it is empty, the loop kernel will not be executed at all.  
 
-If there is no registered list of iterators or it is empty, the loop kernel will not be executed at all. 
 The framework allows to define embedded loops in a yaml configuration, for instance lets regard the following pipeline which is 
 going to list the content of the input folder given in the **input_path** element and of its sub-folders 
 (for the the complete yaml configuration, see the [getting started use case](../mcp_use_case_getting_started/README.md)).

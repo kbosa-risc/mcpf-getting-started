@@ -11,8 +11,7 @@ For more information and for the additional requirements of the use cases see th
 ## Synopsis
 
 >      pipeline_runtime.py  
->         [addapted_use_case_config_n.yaml ... addapted_use_case_config_n.yaml] 
->         basic_use_case_configuration.yaml
+>         [adapted_use_case_configuration.yaml] basic_use_case_configuration.yaml
 
 ### Examples
 
@@ -43,8 +42,8 @@ or
   (for more information see [../mcp_general_functions/README.md](../mcp_general_functions/README.md)):  
   ```
   - label_k:												# name of the pipeline
-	- label_m: ~												# reference to another pipeline, ~ (tilde) is required
-	- function_i: ~											# python function without any additional argument, ~ (tilde) is required
+	- label_m: ~												# reference to another pipeline, the placeholder ~ (tilde) is a required in this case 
+	- function_i: ~											# python function without any additional argument, the placeholder ~ (tilde) is a required in this case
 	- function_j: 											# python function with additional arguments
 		{string_arg1: 'some_string', bool_arg2: True, ...}
 	- loop: label_n											# a loop which iteratively executes the pipeline identified with `label_n'
