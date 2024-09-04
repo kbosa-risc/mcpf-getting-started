@@ -71,7 +71,7 @@ Additional arguments can be defined in the yaml config file for functions, e.g.:
 ```
 
 These arguments are added to json string called *meta*, when the corresponding python function called. 
-They are stored as a dictionary under the label 'arguments' (use the constants 'ARGUMENTS' defined in [constans.py](constants.py)):
+They are stored as a dictionary under the label 'arguments' (use the constants 'ARGUMENTS' defined in [constants.py](constants.py)):
 
 ```
 from typing import Any
