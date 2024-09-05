@@ -208,7 +208,8 @@ def func_with_arguments_given_in_config(data: dict[str, Any]) -> dict[str, Any]:
 
 ### Already implemented routines
 
-Some generally implemented logics (e.g.: reading/writing csv/parquet files or accessing influx/timescale database) have already been available in the following source files (please, be aware these are just preliminary implementations and still have to be finalized):
+Some generally implemented logics (e.g.: reading/writing csv/parquet files or accessing influx/timescale database) have already been available in the following source files
+(please note that these are just preliminary implementations and still have to be finalized):
 * [mcp_general_io.py](mcp_general_io.py)
 * [mcp_general_db.py](mcp_general_db.py)
 * [mcp_general_transformations.py](mcp_general_transformations.py)
