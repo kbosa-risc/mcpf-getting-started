@@ -38,7 +38,7 @@ black = {extras = ["jupyter"], version = "^23.3.0"}
 scipy = "^1.11.4"
 lasagna = "^1.0.0"
 influxdb-client = "^1.44.0"
-psycopg2 = "^2.9.9"
+psycopg2-binary = "^2.9.9"
 sqlalchemy = ">=2.0.31"
 toolz = "^0.12.1"
 openpyxl = "^3.1.5"
