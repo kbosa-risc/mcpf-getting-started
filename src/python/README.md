@@ -54,3 +54,16 @@ and of its sub-directories of the parent directory to the standard output:
 ```
 
 For particular yaml configuration examples, see the use cases. For coding guidelines and best practices, see [mcp_general_functions/README.md](mcp_general_functions/README.md)
+
+# Running with poetry
+
+To run it with poetry:
+```
+cd .../risc_dse/configurable_pipeline_frm/src/python/
+poetry env use "path_with_python_interpreter_binary"
+poetry shell
+poetry install
+cd mcp_frm
+python3.10 ./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml
+exit
+```
