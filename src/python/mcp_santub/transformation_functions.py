@@ -1,5 +1,10 @@
 import math
+import os
+import sys
+
 import numpy as np
+import pandas
+
 import mcp_frm.pipeline_routines as routines
 from typing import Any
 import mcp_general_functions.constants as constants
@@ -44,6 +49,44 @@ def get_object_name(data: dict[str, Any]) -> dict[str, Any]:
         year = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['Baujahr']
         data['coords'] = [y, x]
         data['year_of_building'] = year
+    return data
+
+
+def creating_list_of_build_parts(data: dict[str, Any]) -> dict[str, Any]:
+    meta = routines.get_meta_data(data)
+    df: pandas.DataFrame = data[constants.DEFAULT_IO_DATA_LABEL]
+    list_of_build_parts = list(dict.fromkeys(df[meta['header'][4]]))
+    routines.register_loop_iterator_list(list_of_build_parts)
+    routines.set_meta_in_data(data, meta)
+    return data
+
+
+def selecting_data_of_build_parts(data: dict[str, Any]) -> dict[str, Any]:
+    meta = routines.get_meta_data(data)
+    iterator = routines.pop_loop_iterator()
+    if iterator:
+        df: pandas.DataFrame = data[constants.DEFAULT_IO_DATA_LABEL]
+        build_part_data = df[df[meta['header'][4]] == iterator]
+        output = build_part_data[
+            [meta['header'][1],
+             meta['header'][0],
+             meta['header'][3],
+             meta['header'][5],
+             meta['header'][6],
+             meta['header'][7],
+             meta['header'][13]]]
+        data['current_build_part_data'] = output.set_index(
+            [meta['header'][1],
+             meta['header'][0],
+             meta['header'][3],
+             meta['header'][5],
+             meta['header'][6]]
+        )
+        data['dir_name'] = data['object_name']
+        data[constants.DEFAULT_OUTPUT_FILE] = (os.path.join(
+            data['object_name'],
+            str(output[meta['header'][3]].iat[0]) + "_" + iterator + ".parquet"))
+        print(data['current_build_part_data'])
     return data
 
 
@@ -114,6 +157,7 @@ def process_worksheet_data(data: dict[str, Any]) -> dict[str, Any]:
     data[constants.DEFAULT_IO_DATA_LABEL] = pd.DataFrame(columns=columns, data=all_sheet_data)
     routines.set_meta_in_data(data, meta)
     return data
+
 
 
 
