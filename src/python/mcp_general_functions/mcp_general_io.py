@@ -249,7 +249,8 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'output_path': default_output_path,
         'file_name': data.pop(constants.DEFAULT_OUTPUT_FILE, ''),
-        'relative_path': False
+        'relative_path': False,
+        'preserve_index': None
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
@@ -268,7 +269,7 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
     if not os.path.exists(os.path.dirname(arg['output_path'])):
         os.makedirs(os.path.dirname(arg['output_path']))
 
-    pq.write_table(pa.Table.from_pandas(data[arg['input']]), arg['output_path'])
+    pq.write_table(pa.Table.from_pandas(data[arg['input']], preserve_index=arg['preserve_index']), arg['output_path'])
     if arg['input'] != arg['output']:
         data[arg['output']] = data[arg['input']]
     # general code part 2/2

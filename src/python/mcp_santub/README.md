@@ -1,4 +1,4 @@
-# SanTub Use Case: Extracting Data of Inspection Report related to bridges and Tunnels From Excel Worksheets
+# SanTub Use Case 1: Extracting Data of Inspection Report related to bridges and Tunnels From Excel Worksheets
 
 ## Description
 
@@ -26,4 +26,27 @@ Assuming you are in the directory *mcp_frm*:
 
 ```
 ./pipeline_runtime.py ../mcp_santub/santub_use_case1.yaml
+```
+
+# SanTub Use Case 2: Convert Data of Excel Worksheets into parquet files (one file per bridge per build part)
+
+## Description
+
+It retrieves some data from a csv file and from many excel worksheets and merges them in parquet files. The code will generate many parquet file for every bridges/tunnes (one file per build part).
+Each file is placed into directory named after the object name.
+
+## Requirements
+
+The input data must be present in the same directory structure (see [../../../../data_santub](../../../../data_santub)) and their location must be given 
+in the part *input_path* of the yaml configuration.
+The location given in the part *output_path* of the yaml configuration are going to be created on the local disc.
+
+The output is going to be generated into the location given in the part *output_path* of the yaml configuration.
+
+## How to Start
+
+Assuming you are in the directory *mcp_frm*:
+
+```
+./pipeline_runtime.py ../mcp_santub/santub_use_case2.yaml ../mcp_santub/santub_use_case1.yaml
 ```

@@ -1,5 +1,8 @@
 output_path: 'c:\Projects\risc_dse\data_santub\parquet_files_for_classifiers'
-
+further_configuration:
+  - default_value_note: 0
+  - header:
+      ['Jahr', 'Objekt Name', 'Baujahr', 'Pos.', 'Bauteil', 'Lokation', 'Schaeden', 'Anzahl Lokat.', 'Laenge (m)', 'Breite (m)', 'Material', 'zustand_note', 'Anmerkung', 'bauteil_zustand_note', 'Y', 'X', 'Gesamtnote']
 pipeline_extension:
   - read_dirs_p:
       - list_dir:
@@ -16,5 +19,5 @@ pipeline_extension:
   - group_output_p:
       - selecting_data_of_build_parts: ~
       - write_parquet:
-          - { input: 'current_build_part_data', 'output_path'relative_path: True }
+          - { input: 'current_build_part_data', relative_path: True, output: 'current_build_part_data', 'preserve_index': False }
 

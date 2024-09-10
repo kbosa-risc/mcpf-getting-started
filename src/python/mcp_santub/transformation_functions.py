@@ -70,23 +70,26 @@ def selecting_data_of_build_parts(data: dict[str, Any]) -> dict[str, Any]:
         output = build_part_data[
             [meta['header'][1],
              meta['header'][0],
+             meta['header'][2],
              meta['header'][3],
              meta['header'][5],
              meta['header'][6],
              meta['header'][7],
+             meta['header'][11],
              meta['header'][13]]]
-        data['current_build_part_data'] = output.set_index(
-            [meta['header'][1],
-             meta['header'][0],
-             meta['header'][3],
-             meta['header'][5],
-             meta['header'][6]]
-        )
+        data['current_build_part_data'] = output # .set_index(
+        #    [meta['header'][1],
+        #     meta['header'][0],
+        #     meta['header'][3],
+        #     meta['header'][5],
+        #     meta['header'][6]]
+        #)
+        filename = (str(output[meta['header'][3]].iat[0]) + "_" + iterator + ".parquet")
         data['dir_name'] = data['object_name']
-        data[constants.DEFAULT_OUTPUT_FILE] = (os.path.join(
+        data[constants.DEFAULT_OUTPUT_FILE] = ((os.path.join(
             data['object_name'],
-            str(output[meta['header'][3]].iat[0]) + "_" + iterator + ".parquet"))
-        print(data['current_build_part_data'])
+            filename)).lower().replace(" ","_").replace("ä","ae").replace("ö","oe").replace("ü","ue"))
+        # print(data['current_build_part_data'])
     return data
 
 
