@@ -2,7 +2,7 @@ input_path: 'c:\Projects\risc_dse\data_santub\excel_files'
 output_path: 'c:\Projects\risc_dse\data_santub\parquet_files'
 entry_point: 'prepare_reports_p'
 further_configuration:
-  - default_value_note: 0
+  - default_value_note: 1
   - header:
       ['Jahr', 'Objekt Name', 'Baujahr', 'Pos.', 'Bauteil', 'Lokation', 'Schaeden', 'Anzahl Lokat.', 'Laenge (m)', 'Breite (m)', 'Material', 'Note', 'Anmerkung', 'Zustandnote', 'Y', 'X', 'Gesamtnote']
 

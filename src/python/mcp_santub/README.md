@@ -14,6 +14,9 @@ It retrieves some data from a csv file and from many excel worksheets and merges
 
 ## Requirements
 
+For the execution of this use case the mcp framework is required, in which is possible to create code pipelines of python functions
+(for more information see https://gitdma.risc-software.at/risc_ds/risc_dse/-/tree/configurable_pipeline_with_sample_use_case/configurable_pipeline_frm/src/python).
+
 The input data must be present in the same directory structure (see [../../../../data_santub](../../../../data_santub)) and their location must be given 
 in the part *input_path* of the yaml configuration.
 The location given in the part *output_path* of the yaml configuration are going to be created on the local disc.
@@ -36,6 +39,11 @@ It retrieves some data from a csv file and from many excel worksheets and merges
 Each file is placed into directory named after the object name.
 
 ## Requirements
+
+First of all, since this use case is a pipeline extension, it requires the yaml configuration file of the 1st use case [santub_use_case1.yaml](santub_use_case1.yaml`)
+
+For the execution of this use case the mcp framework is required, in which is possible to create code pipelines of python functions
+(for more information see https://gitdma.risc-software.at/risc_ds/risc_dse/-/tree/configurable_pipeline_with_sample_use_case/configurable_pipeline_frm/src/python).
 
 The input data must be present in the same directory structure (see [../../../../data_santub](../../../../data_santub)) and their location must be given 
 in the part *input_path* of the yaml configuration.

@@ -1,3 +1,11 @@
+'''This module contains some general written io functions for the mcp framework
+
+The common in these functions is that they can handle all of the following:
+- default input,
+- arguments given in yaml configuration and
+- loop iterators
+'''
+
 import mcp_frm.pipeline_routines as routines
 import pandas as pd
 from typing import Any
@@ -9,6 +17,19 @@ import pyarrow as pa
 
 
 def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    It prints out the given content of 'data' to the standard out.
+
+    Yaml args:
+        'input':    it is a label in 'data' which identifies the input,
+                    by default it is constants.DEFAULT_IO_DATA_LABEL
+
+    Returns in data:
+        'output':   it is a label in 'data' which identifies the output (the displayed text),
+                    by default it is constants.DEFAULT_IO_DATA_LABEL
+
+
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -31,6 +52,26 @@ def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def list_dir(data: dict[str, Any]) -> dict[str, Any]:
+    """
+        It returns the content of the given directory in a list.
+        Yaml args:
+            'input_path':       a string containing a directory path, which will be listed,
+                                by default it is the value identified with the label
+                                constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+            'relative_path':    a bool value, if it is 'True' the given 'input_path' is a relative path
+                                by default it is 'False'
+            'only_file_names_return':   a bool value, if it is 'True' the content of the given directory
+                                        is returned without its path,
+                                        by default it is 'False'
+            'output_for_iteration':     a bool value, if it is 'True' the output (list) of the function is registered
+                                        for a subsequent loop,
+                                        by default it is 'False'
+
+        Returns in data:
+            'output':   it is a label in 'data' which identifies the output
+                        (a list containing the content of the given directory),
+                        by default it is constants.DEFAULT_IO_DATA_LABEL
+        """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -75,6 +116,11 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def set_next_tmp_dir_as_input_dir(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    the given input directory, output directory and temporary directories are stored in a list by the framework
+    (first element: input dir, subsequent elements temp dirs and the last element is output dir).
+    The function set the upcoming tmp/output dir to the default input dir
+    """
     meta = routines.get_meta_data(data)
     routines.set_current_output_dir_to_input_dir(meta)
     routines.set_meta_in_data(data, meta)
@@ -82,6 +128,23 @@ def set_next_tmp_dir_as_input_dir(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def unzip(data: dict[str, Any]) -> dict[str, Any]:
+    """
+        It unzip the given input file/ dir.
+        Yaml args:
+            'input_path':       a string containing a directory path,
+                                by default it is the value identified with the label
+                                constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+            'relative_path':    a bool value, if it is 'True' the given 'input_path' is a relative path
+                                by default it is 'False'
+            'output_path':
+            'file_name':
+            'output_into_next_tmp_folder':
+
+        Returns in data:
+            'output':   it is a label in 'data' which identifies the output
+                        (string describes the path to where the content of the file/dir was unzipped),
+                        by default it is constants.DEFAULT_IO_DATA_LABEL
+        """
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values

@@ -7,6 +7,11 @@ import sys
 
 
 def get_meta_data(data: dict[str, Any]) -> dict[str, Any]:
+    """
+
+    Returns:
+        object:
+    """
     if constants.ARG_KEYWORD_META not in data:
         raise ValueError("Error! No metadata in the arguments")
     json_meta = data[constants.ARG_KEYWORD_META]
@@ -29,6 +34,11 @@ def register_loop_iterator_list(iterator_list: list, deep_copy: bool = False):
 
 
 def pop_loop_iterator() -> Any:
+    """
+
+    Returns:
+        object:
+    """
     loop_singleton = singleton.LoopIterators()
     return loop_singleton.pop_iterator()
 

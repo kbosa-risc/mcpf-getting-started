@@ -101,7 +101,7 @@ The main purpose of loops in a (code) pipeline defined in yaml configuration is 
 
 ### Registering list of data for a loop 
 
-You can register a list of elements (let's call it *list of iterators*), on which you would like to execute a loop. 
+You can register a list of elements, on which you would like to execute a loop. 
 
 ```
 from typing import Any
@@ -131,7 +131,7 @@ once for the members of the loop kernel via the function routines.pop_loop_itera
 
 If the framework finds a loop in the yaml configuration (see [../mcp_frm/README.md](../mcp_frm/README.md)), it executes the specified pipeline sequentially on each 
 element of the registered list. 
-If there is no registered list of iterators or it is empty, the loop kernel will not be executed at all.  
+If there is no registered list of iterator values or it is empty, the loop kernel will not be executed at all.  
 
 The framework allows to define embedded loops in a yaml configuration, for instance lets regard the following pipeline which is 
 going to list the content of the input folder given in the **input_path** element and of its sub-folders 
@@ -154,7 +154,7 @@ pipelines:
       - print_to_stdout: ~
 ```
 
-### Accessing to the current iterator within the loop kernel
+### Accessing to the current iterator value within the loop kernel
 
 
 ```
@@ -170,7 +170,9 @@ def test2_loop_kernel(data: dict[str, Any]) -> dict[str, Any]:
 	return data
 ```
 
-**Important remark**: Each iterator is available only once from the root kernel pipeline (Subsequent cases the *function routines.pop_loop_iterator* returns with 'None' value).
+**Important remark**: For every execution/iteration of a loop kernel the corresponding iterator value is implicitly provided by the framework, but only once. 
+Subsequent calls of the *function routines.pop_loop_iterator* returns with 'None' value. So it is the responsibility of the developer to make the current iterator value available 
+for other functions of the loop kernel, if needed.
 
 ## Generaly Implemented Routines
 
