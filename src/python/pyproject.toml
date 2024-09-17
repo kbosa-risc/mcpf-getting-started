@@ -22,7 +22,7 @@ authors = [
 
 [[tool.poetry.source]]
 name = "risc-pypi"
-url = "https://pypinexus01.risc-software.at/repository/pypi/simple"
+url = "https://pypinexus01.risc-software.at/repository/pypi/simple/"
 default = false
 secondary = false
 
