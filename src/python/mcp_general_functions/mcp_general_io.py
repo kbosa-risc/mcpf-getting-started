@@ -71,7 +71,7 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
             'output':   it is a label in 'data' which identifies the output
                         (a list containing the content of the given directory),
                         by default it is constants.DEFAULT_IO_DATA_LABEL
-        """
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -129,7 +129,7 @@ def set_next_tmp_dir_as_input_dir(data: dict[str, Any]) -> dict[str, Any]:
 
 def unzip(data: dict[str, Any]) -> dict[str, Any]:
     """
-        It unzip the given input file/ dir.
+        It unzip the content of given input file/ dir.
         Yaml args:
             'input_path':       a string containing a directory path,
                                 by default it is the value identified with the label
@@ -144,7 +144,7 @@ def unzip(data: dict[str, Any]) -> dict[str, Any]:
             'output':   it is a label in 'data' which identifies the output
                         (string describes the path to where the content of the file/dir was unzipped),
                         by default it is constants.DEFAULT_IO_DATA_LABEL
-        """
+    """
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
@@ -189,6 +189,24 @@ def unzip(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def read_csv(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It reads the given input csv file.
+            Yaml args:
+                'input_path':       a string containing a directory path,
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+                'relative_path':    a bool value, if it is 'True' the given 'input_path' is a relative path
+                                    by default it is 'False'
+                'file_name':
+                'separator':
+                'skip_rows':
+                'engine':
+
+            Returns in data:
+                'output':   it is a label in 'data' which identifies the output
+                            (the content of the csv file in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -232,6 +250,20 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def set_default_file_name_from_data(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It sets the given path to the default output file.
+            Yaml args:
+                'input':            a string containing a directory path,
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+
+                'extension':    file extension can be given separately
+
+            Returns in data:
+                'output':   it is a label in 'data' which identifies the output
+                            (the file path),
+                            by default it is constants.DEFAULT_OUTPUT_FILE
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -258,6 +290,24 @@ def set_default_file_name_from_data(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def read_excel_worksheets(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It reads the worksheets from the given input excel file.
+            Yaml args:
+                'input_path':       a string containing a directory path,
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+                'relative_path':    a bool value, if it is 'True' the given 'input_path' is a relative path
+                                    by default it is 'False'
+                'file_name':
+                'skip_rows':
+                'skip_worksheets':
+                'engine':
+
+            Returns in data:
+                'output':   it is a label in 'data' which identifies the output
+                            (the content of the csv file in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -301,6 +351,24 @@ def read_excel_worksheets(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It writes its pandas dataframe input to a parquet file.
+            Yaml args:
+                'input':            it is a label in "data", which identifies the input data
+                                    (given in terms of pandas dataframe),
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+                'output_path':
+                'relative_path':    a bool value, if it is 'True' the given 'output_path' is a relative path
+                                    by default it is 'False'
+                'file_name':         by default it is constants.DEFAULT_OUTPUT_FILE
+                'preserve_index':
+
+            Returns in data:
+                'output':   it is a label in 'data' which identifies the output
+                            (the content of the input in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
@@ -341,6 +409,24 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def write_csv(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It writes its pandas dataframe input to a csv file.
+            Yaml args:
+                'input':            it is a label in "data", which identifies the input data
+                                    (given in terms of pandas dataframe),
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+                'output_path':
+                'relative_path':    a bool value, if it is 'True' the given 'output_path' is a relative path
+                                    by default it is 'False'
+                'file_name':         by default it is constants.DEFAULT_OUTPUT_FILE
+                'separator':
+
+            Returns in data:
+                'output':   it is a label in 'data' which identifies the output
+                            (the content of the input in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)

@@ -52,6 +52,10 @@ class PipelineConfig:
 
 
 def load_pipeline_config(argv: list[str]) -> PipelineConfig:
+    """
+    It uses the "lasagna" package to load the yaml pipline configuration files and compose a single code pipeline
+    configuration from them.
+    """
     # set the environment variable with a prefix
     if len(argv) == 1:
         return lasagna.build(
@@ -96,6 +100,9 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
 
 
 def increment_dept_of_nested_loops():
+    """
+    This function keeps track the dept of the nested loops.
+    """
     global current_max_dept_of_nested_loops
     global dept_of_nested_loops
     dept_of_nested_loops += 1
@@ -104,6 +111,10 @@ def increment_dept_of_nested_loops():
 
 
 def init_iterator(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Each execution of every loop kernel starts with this function. It initializes the current value of the
+    loop iterator.
+    """
     global dept_of_nested_loops
     loop_singleton = singletons.LoopIterators()
     loop_singleton.init_current_iterator(dept_of_nested_loops - 1)
@@ -111,6 +122,9 @@ def init_iterator(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    This function is used to implement a loop in the code pipeline.
+    """
     global dept_of_nested_loops
     global current_max_dept_of_nested_loops
     global loop_kernel_pipelines
@@ -139,6 +153,11 @@ def validate_pipeline(
             modules: dict,
             current_param_lists: list,
             param_lists_of_loops: list[list]) -> list:
+    """
+    This function compose the code pipeline and pipeline of the loop kernels according the given yaml configuration,
+    stores the function arguments given in the yaml configuration in a structured way and
+    validate each pipeline (e.g.: it checks the existence of the given functions in the enumerated python modules).
+    """
     global loop_kernel_pipelines
     # preparing available building blocks
     # this_module = sys.modules[__name__]
@@ -181,6 +200,9 @@ def validate_pipeline(
 
 
 def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: list) -> (str, dict[str, pd.DataFrame]):
+    """
+    It initializes the "meta" and execute the code pipeline composed from the given configuration.
+    """
     config.tmp_paths.insert(0, config.input_path)
     config.tmp_paths.append(config.output_path)
     meta = {constants.TMP_PATH_INDEX: 0}

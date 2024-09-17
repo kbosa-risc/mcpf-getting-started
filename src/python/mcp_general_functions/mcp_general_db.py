@@ -8,6 +8,21 @@ from sqlalchemy import create_engine
 
 
 def influx_df_write(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It writes its input pandas dataframe into influx database.
+            Yaml args:
+                'input':            it is a label in "data", which identifies the input data
+                                    (given in terms of pandas dataframe),
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+                'measurement_name':
+
+            Returns in data:
+                'output':   Not implemented yet!
+                            it should be  a label in 'data' which identifies the output
+                            (the content of the input pandas dataframe in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     meta = routines.get_meta_data(data)
     db_conf = routines.get_db_config(meta, 'influx')
     # token: str = os.environ.get("INFLUXDB_TOKEN")
@@ -37,6 +52,22 @@ def influx_df_write(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def timescale_df_write(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It writes its pandas dataframe input into timescale database.
+            Yaml args:
+                'input':            it is a label in "data", which identifies the input data
+                                    (given in terms of pandas dataframe),
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+                'schema':
+                'table':
+
+            Returns in data:
+                'output':   Not implemented yet!
+                            it should be  a label in 'data' which identifies the output
+                            (the content of the input pandas dataframe in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     meta = routines.get_meta_data(data)
     db_conf = routines.get_db_config(meta, 'timescale')
     arg = {

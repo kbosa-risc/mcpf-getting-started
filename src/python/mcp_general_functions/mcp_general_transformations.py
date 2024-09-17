@@ -6,6 +6,23 @@ from mcp_general_functions import helper
 
 
 def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
+    """
+            It appends its input pandas dataframe to another dataframe.
+            Yaml args:
+                'input':            it is a label in "data", which identifies the input data
+                                    (given in terms of pandas dataframe),
+                                    by default it is the value identified with the label
+                                    constants.DEFAULT_IO_DATA_LABEL (if it is a string)
+            'left_value':           it is a label in "data", which identifies the pandas dataframe
+                                    in "data" to which the input dataframe will be appended.
+            'reset_index': False
+
+            Returns in data:
+                'output':   Not implemented yet!
+                            it should be  a label in 'data' which identifies the output
+                            (the content of the input pandas dataframe in pandas dataframe),
+                            by default it is constants.DEFAULT_IO_DATA_LABEL
+    """
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
@@ -37,6 +54,12 @@ def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def set_default_input_from_variable(data: dict[str, Any]) -> dict[str, Any]:
+    """
+        It sets the value of the label constants.DEFAULT_IO_DATA_LABEL in "data"
+        Yaml args:
+                 'input_label': It is a label in "data", whose value will be referenced by
+                 the other label constants.DEFAULT_IO_DATA_LABEL as well.
+    """
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
@@ -56,6 +79,12 @@ def set_default_input_from_variable(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def remove_data(data: dict[str, Any]) -> dict[str, Any]:
+    """
+        It removes a label (with its referenced value) from "data"
+        Yaml args:
+                 'input':   It is a label in "data", which will be removed from "data",
+                            by default it is constants.DEFAULT_IO_DATA_LABEL.
+    """
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
     # default_arguments_values
@@ -80,7 +109,7 @@ def interpolate_first_column(data: dict[str, Any]) -> dict[str, Any]:
 
         Returns:
             pd.DataFrame: DataFrame with missing values interpolated.
-        """
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
