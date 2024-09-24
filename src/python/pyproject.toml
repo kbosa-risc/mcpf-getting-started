@@ -35,13 +35,13 @@ h5py = "^3.8.0"
 poethepoet = "^0.19.0"
 black = {extras = ["jupyter"], version = "^23.3.0"}
 scipy = "^1.11.4"
-lasagna = "^1.0.0"
 influxdb-client = "^1.44.0"
 psycopg2-binary = "^2.9.9"
 sqlalchemy = ">=2.0.31"
 toolz = "^0.12.1"
 openpyxl = "^3.1.5"
 pythonnet = "^3.0.3"
+lasagna = {version = "^1.0.0", source = "risc-pypi"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
