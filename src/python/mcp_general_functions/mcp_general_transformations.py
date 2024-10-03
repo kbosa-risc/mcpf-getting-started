@@ -1,3 +1,4 @@
+import duckdb
 import mcp_frm.pipeline_routines as routines
 import pandas as pd
 from typing import Any
@@ -184,5 +185,33 @@ def interpolate_first_column(data: dict[str, Any]) -> dict[str, Any]:
     )
 
     data[arg['output']] = new_spectral_response_help_table
+    routines.set_meta_in_data(data, meta)
+    return data
+
+def df_sql_statement(data: dict[str, Any]) -> dict[str, Any]:
+    # general code part 2/1
+    iterator = routines.pop_loop_iterator()
+    meta = routines.get_meta_data(data)
+    # default_arguments_values
+    arg = {
+        'input': constants.DEFAULT_IO_DATA_LABEL,
+        'output': constants.DEFAULT_IO_DATA_LABEL,
+        'SQL_STMT': ''
+    }
+    # merging default values with current argument values
+    if meta[constants.ARGUMENTS]:
+        arg = arg | meta[constants.ARGUMENTS]
+    # if the function part of a loop
+    if iterator:
+        arg['input'] = iterator
+
+    # create DuckDB connection
+    conn = duckdb.connect(database=':memory:')
+    print(arg)
+    conn.register('data', data[arg['input']])
+
+    df = conn.execute(arg['SQL_STMT']).fetchdf()
+
+    data[arg['output']] = df
     routines.set_meta_in_data(data, meta)
     return data
