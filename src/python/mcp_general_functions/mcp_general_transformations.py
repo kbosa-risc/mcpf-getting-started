@@ -207,7 +207,6 @@ def df_sql_statement(data: dict[str, Any]) -> dict[str, Any]:
 
     # create DuckDB connection
     conn = duckdb.connect(database=':memory:')
-    print(arg)
     conn.register('data', data[arg['input']])
 
     df = conn.execute(arg['SQL_STMT']).fetchdf()

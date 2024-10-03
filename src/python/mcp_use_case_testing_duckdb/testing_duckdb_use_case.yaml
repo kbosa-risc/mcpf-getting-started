@@ -8,15 +8,7 @@ pipelines:
   - main_p:
       - read_csv: 
           - { 'input_path': '..\mcp_use_case_testing_duckdb', 'file_name': 'testing_csv.csv'}
-      - df_sql_statement:
-          - { 'SQL_STMT': 'SELECT * FROM data '}
       - print_to_stdout: ~
-
-  - list_input_dirs_p:
-      - processing_files_p: ~
-      - list_dir:
-          - { 'only_file_names_return': True, 'output_for_iteration': True }
-      - loop: processing_files_p
-
-  - processing_files_p:
+      - df_sql_statement:
+          - { 'SQL_STMT': 'SELECT * FROM data where id > 50 and id < 150;'}
       - print_to_stdout: ~

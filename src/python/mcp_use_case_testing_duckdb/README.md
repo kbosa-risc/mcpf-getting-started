@@ -1,38 +1,21 @@
-
-# Getting Started: A simple Use Case
-
-## Description
-
-It uses the generalized implementation of only two python functions.
-They are *list_dir* and *print_to_stdout* and they are located in [mcp_general_io.py](../mcp_general_functions/mcp_general_io.py)
-
-This use case simply list of the content of the given input folder (*input_path* in the configuration below) and of its subfolders (see the yaml configuration below). 
-For achieving this, 
-1. it creates a list about the content of the given input folder and start a loop which go through this list;
-1. It print out the current element, then it creates subsequent list for an embedded loop (if the current element is not a directory it creates an empty list); and
-1. In an inner loop, print out the current element of the second list.
+# SQL Dataframe editor
 
 Content of the configuration file:
 
-```
-input_path: &base_dir '..'
+```yaml
+
+input_path: &base_dir 'C:\Workspace\mjahn\risc_dse\configurable_pipeline_frm\src\python\mcp_use_case_testing_duckdb'
 output_path: *base_dir
 entry_point: 'main_p'
 imports:
   - mcp_general_functions.mcp_general_io
+  - mcp_general_functions.mcp_general_transformations
 pipelines:
   - main_p:
-      - list_dir:
-          - { relative_path: True, output_for_iteration: True }
-      - loop: list_input_dirs_p
-
-  - list_input_dirs_p:
-      - processing_files_p: ~
-      - list_dir:
-          - { 'only_file_names_return': True, 'output_for_iteration': True }
-      - loop: processing_files_p
-
-  - processing_files_p:
+      - read_csv: 
+          - { 'input_path': '..\mcp_use_case_testing_duckdb', 'file_name': 'testing_csv.csv'}
+      - df_sql_statement:
+          - { 'SQL_STMT': 'SELECT * FROM data '}
       - print_to_stdout: ~
 
 ```
@@ -45,6 +28,6 @@ None
 
 Assuming you are in the directory *mcp_frm*:
 
-```
-./pipeline_runtime.py ../mcp_use_case_getting_started/first_use_case.yaml
+```bash
+python ./pipeline_runtime.py ../mcp_use_case_testing_duckdb/testing_duckdb_use_case.yaml
 ```
