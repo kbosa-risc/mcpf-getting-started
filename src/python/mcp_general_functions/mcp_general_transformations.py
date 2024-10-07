@@ -189,6 +189,17 @@ def interpolate_first_column(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 def df_sql_statement(data: dict[str, Any]) -> dict[str, Any]:
+    """Executes a SQL query on a given pandas DataFrame and returns the transformed DataFrame.
+
+    This function reads a pandas DataFrame (`df`) and a SQL query (`sql_query`), applies the SQL query 
+    on the DataFrame, and returns a new DataFrame containing the results of the query.
+
+    Args:
+        data (dict[str, Any]): _description_
+
+    Returns:
+        dict[str, Any]: _description_
+    """
     # general code part 2/1
     iterator = routines.pop_loop_iterator()
     meta = routines.get_meta_data(data)
