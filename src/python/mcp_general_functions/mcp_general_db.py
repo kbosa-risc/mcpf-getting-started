@@ -115,6 +115,7 @@ def postgres_csv_write(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)
     arg = {
         'input': constants.DEFAULT_IO_DATA_LABEL,
+        'csv_file_path': ''
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
@@ -124,7 +125,7 @@ def postgres_csv_write(data: dict[str, Any]) -> dict[str, Any]:
     
     table_name = constants.FILE_IMPORT.table_name
     db_config = constants.DB_CONNECTION
-    csv_file_path = constants.FILE_IMPORT.csv_file_path
+    csv_file_path = data[arg["csv_file_path"]]
 
     conn = psycopg2.connect(
         host=db_config.host,
@@ -154,6 +155,7 @@ def postgres_csv_write(data: dict[str, Any]) -> dict[str, Any]:
         cursor.close()
         conn.close()
 
+
 def df_to_filelike_to_postgres(data: dict[str, Any]) -> dict[str, Any]:
     """
     Copy a df via a Filelike object into a PostgreSQL table using the COPY command.
@@ -182,7 +184,6 @@ def df_to_filelike_to_postgres(data: dict[str, Any]) -> dict[str, Any]:
     df = data[arg['input']]
     df.to_csv(temp_csv_obejct, index=False)
     temp_csv_obejct.seek(0)
-    csv_file_path = constants.FILE_IMPORT.csv_file_path
     table_name = constants.FILE_IMPORT.table_name
     db_config = constants.DB_CONNECTION
 
@@ -203,7 +204,7 @@ def df_to_filelike_to_postgres(data: dict[str, Any]) -> dict[str, Any]:
         
         # Commit the transaction to make sure the changes are saved
         conn.commit()
-        print(f"Data from {csv_file_path} has been copied to {table_name}")
+        print(f"Data from dataframe has been copied to {table_name}")
         
     except Exception as e:
         # If something goes wrong, roll back the transaction

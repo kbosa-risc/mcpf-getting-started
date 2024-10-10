@@ -49,7 +49,7 @@ def convert_second_to_ms(timestamp: int):
     return timestamp * 1000 * 1000
 
 def create_db_table_if_not_exists():
-    """_summary_
+    """Creates database table if not exists
 
     Args:
         data (dict[str, Any]): _description_

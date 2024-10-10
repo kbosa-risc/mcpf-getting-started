@@ -11,7 +11,6 @@ class DB_CONNECTION:
     port = 5444
 
 class FILE_IMPORT:
-    csv_file_path = "./test.csv"
     table_name = "csv_file"
     
 class CSV_FILESTRUCTUR:
