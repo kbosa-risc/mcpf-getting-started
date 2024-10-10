@@ -30,13 +30,13 @@ def create_test_csv_data(data: dict[str, Any]) -> dict[str, Any]:
         arg['input'] = iterator
     path = constants.CSV_NAME_PATH
     if not os.path.exists(path):
-        N = 5_000_000  # Anzahl der Zeilen
+        N = 2_500_000  # Anzahl der Zeilen
         dataframe = pd.DataFrame({
             'id': np.arange(N),
             'value1': np.random.rand(N),
             'value2': np.random.rand(N)
         })
 
-        dataframe.to_csv(path)
+        dataframe.to_csv(path, index=False)
     routines.set_meta_in_data(data, meta)
     return data

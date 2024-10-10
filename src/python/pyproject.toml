@@ -22,7 +22,7 @@ authors = [
 
 [[tool.poetry.source]]
 name = "risc-pypi"
-url = "https://pypinexus01.risc-software.at/repository/pypi/simple/"
+url = "https://pypiserver.risc-software.at"
 priority = "explicit"
 
 
@@ -43,6 +43,7 @@ openpyxl = "^3.1.5"
 pythonnet = "^3.0.3"
 lasagna = {version = "^1.0.0", source = "risc-pypi"}
 duckdb = "^1.1.1"
+mysql-connector-python = "^9.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

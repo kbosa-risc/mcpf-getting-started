@@ -1,4 +1,6 @@
 import pandas as pd
+import mcp_general_functions.constants as constants
+import psycopg2
 
 
 def vlookup(
@@ -45,3 +47,39 @@ def vlookup(
 def convert_second_to_ms(timestamp: int):
     #  0.000625
     return timestamp * 1000 * 1000
+
+def create_db_table_if_not_exists():
+    """_summary_
+
+    Args:
+        data (dict[str, Any]): _description_
+
+    Returns:
+        dict[str, Any]: _description_
+    """
+
+    datastructure = [i + " " + constants.CSV_FILESTRUCTUR.columns[i] for i in constants.CSV_FILESTRUCTUR.columns]
+    db_config = constants.DB_CONNECTION
+    table_name = constants.FILE_IMPORT.table_name
+    conn = psycopg2.connect(
+        host=db_config.host,
+        database=db_config.database,
+        user=db_config.user,
+        password=db_config.password,
+        port=db_config.port
+    )
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT COUNT(*) FROM information_schema.tables where table_name = '{table_name}';")
+        if cursor.fetchone()[0] == 0:
+            print("Creating Table...")
+            cursor.execute(f"CREATE TABLE {table_name} ({', '.join(datastructure)});")
+        else:
+            print("Table already exists.")
+        conn.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
