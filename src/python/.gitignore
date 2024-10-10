@@ -20,6 +20,8 @@ python_package_for-release.txt
 
 /data_santub/*/*.parquet
 data_santub/*/*/*.xlsx
+temp/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
