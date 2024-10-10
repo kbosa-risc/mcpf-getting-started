@@ -13,7 +13,7 @@ class DB_CONNECTION:
 class FILE_IMPORT:
     table_name = "csv_file"
     
-class CSV_FILESTRUCTURE:
+class CSV_FILE_STRUCTURE:
     columns = {
         "id": "int",
         "value1": "float",

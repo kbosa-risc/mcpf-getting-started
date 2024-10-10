@@ -58,7 +58,7 @@ def create_db_table_if_not_exists():
         dict[str, Any]: _description_
     """
 
-    datastructure = [i + " " + constants.CSV_FILESTRUCTUR.columns[i] for i in constants.CSV_FILESTRUCTUR.columns]
+    datastructure = [i + " " + constants.CSV_FILE_STRUCTURE.columns[i] for i in constants.RUCTUR.columns]
     db_config = constants.DB_CONNECTION
     table_name = constants.FILE_IMPORT.table_name
     conn = psycopg2.connect(
