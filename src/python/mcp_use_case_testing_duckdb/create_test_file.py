@@ -30,7 +30,7 @@ def create_test_csv_data(data: dict[str, Any]) -> dict[str, Any]:
         arg['input'] = iterator
     path = constants.CSV_NAME_PATH
     if not os.path.exists(path):
-        N = 2_500_000  # Anzahl der Zeilen
+        N = 2_500_000  # row count
         dataframe = pd.DataFrame({
             'id': np.arange(N),
             'value1': np.random.rand(N),
