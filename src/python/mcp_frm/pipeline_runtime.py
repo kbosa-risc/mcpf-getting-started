@@ -205,8 +205,11 @@ def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: li
     """
     config.tmp_paths.insert(0, config.input_path)
     config.tmp_paths.append(config.output_path)
+    tmp_absolut_paths = []
+    for path in config.tmp_paths:
+        tmp_absolut_paths.append(os.path.abspath(path))
     meta = {constants.TMP_PATH_INDEX: 0}
-    meta[constants.TMP_PATHS] = config.tmp_paths
+    meta[constants.TMP_PATHS] = tmp_absolut_paths
     if config.further_configuration:
         for key_value_pair in config.further_configuration:
             for key in key_value_pair:

@@ -1,6 +1,6 @@
 import math
 import os
-import sys
+from pathlib import Path
 
 import numpy as np
 import pandas
@@ -42,8 +42,8 @@ def get_object_name(data: dict[str, Any]) -> dict[str, Any]:
         tmp_str = iterator.removesuffix(".xlsx").removesuffix("_neu")
         data['object_name'] = " ".join(tmp_str.split("InspB_")[-1].split("_")[0:-1])
         data[constants.DEFAULT_OUTPUT_FILE] = data['object_name'] + ".parquet"
-        data['dir_name'] = iterator.split('\\')[-2]
-        # df[(df == 'banana').any(axis=1)]
+        # data['dir_name'] = iterator.split('\\')[-2]
+        data['dir_name'] = Path(iterator).parent.name
         y = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['Y']
         x = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['X']
         year = data['coordinates'][data['coordinates']['object_name'] == data['object_name']].iloc[0]['Baujahr']

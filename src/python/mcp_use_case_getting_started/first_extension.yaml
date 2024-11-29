@@ -1,0 +1,9 @@
+input_path: &base_dir 'c:\Data'
+output_path: *base_dir
+
+pipeline_extension:
+  - processing_files_p:
+    - print_to_stdout: ~
+    - read_csv:
+      - { relative_path: True}
+    - print_to_stdout: ~
