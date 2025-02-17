@@ -19,13 +19,6 @@ authors = [
     "Karoly Bosa <karoly.bosa@risc-software.at>"
 ]
 
-
-[[tool.poetry.source]]
-name = "risc-pypi"
-url = "https://pypinexus01.risc-software.at/repository/pypi/simple/"
-priority = "explicit"
-
-
 [tool.poetry.dependencies]
 python = "~3.10"
 pandas = "^1.5.2"
@@ -41,9 +34,9 @@ sqlalchemy = ">=2.0.31"
 toolz = "^0.12.1"
 openpyxl = "^3.1.5"
 pythonnet = "^3.0.3"
-lasagna = {version = "^1.0.0", source = "risc-pypi"}
 duckdb = "^1.1.1"
 mysql-connector-python = "^9.0.0"
+risc-lasagna = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

@@ -6,8 +6,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
-import lasagna
-import lasagna.layer as layer
+import risc_lasagna as lasagna
+import risc_lasagna.layers as layers
 from typing import Optional, List
 from pathlib import Path
 from toolz import pipe
