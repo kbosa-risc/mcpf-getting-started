@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import risc_lasagna as lasagna
-import risc_lasagna.layers as layers
+import risc_lasagna.layer as layer
 from typing import Optional, List
 from pathlib import Path
 from toolz import pipe
