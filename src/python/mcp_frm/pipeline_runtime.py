@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 # TODO
 # config levels
 # more and embedded loops (list of loop list and iterator list)
@@ -227,9 +228,11 @@ def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: li
     retval = pipe(data, *pipeline)
     return 0
 
-
-if __name__ == "__main__":
-    for arg in sys.argv[1:]:
+def run(*args: str) -> None:
+    """
+    Run pipeline programmatically as if called from command line
+    """
+    for arg in args:
         if not os.path.isfile(arg):
             raise FileNotFoundError("Error: config file " + arg + " does not exist.")
     c = load_pipeline_config(sys.argv)
@@ -248,3 +251,6 @@ if __name__ == "__main__":
         p.current_param_lists = param_lists
         p.param_lists_of_loops = arguments_of_sub_pipelines
         run_pipeline(c, pipeline_string, param_lists)
+
+if __name__ == "__main__":
+    run(*sys.argv[1:])
