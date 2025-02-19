@@ -21,7 +21,7 @@ python_package_for-release.txt
 /data_santub/*/*.parquet
 data_santub/*/*/*.xlsx
 temp/
-
+/mcp_use_case_testing_duckdb/testing_csv.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
