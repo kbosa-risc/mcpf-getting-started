@@ -17,10 +17,10 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_fronius/fronius_use_case1.yaml
 ```
 
 # Fronius 1st Use Case 2nd Version: Resampling and Merging CSV Data
@@ -44,10 +44,10 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case1b.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_fronius/fronius_use_case1b.yaml
 ```
 
 # Fronius 2nd Use Case: Resampling and Merging Parquet Data
@@ -58,12 +58,12 @@ It is a modified version of the previous use case. It overwrites the routine spe
 read the input dat from parquet file, see the yaml configuration file [fronius_use_case2.yaml](fronius_use_case2.yaml):
 
 ```
-input_path: 'c:\Projects\risc_dse\data_fronius2\input_files\'
-output_path: 'c:\Projects\risc_dse\data_fronius2\parquet_files\'
+input_path: '../data_fronius2/input_files/'
+output_path: '../data_fronius2/parquet_files/'
 input_file_name: '*.tar.gz'
 
 tmp_paths:
-  - 'c:\Projects\he_meta\data_fronius2\unzipped_files\'
+  - '../data_fronius2/unzipped_files/'
 
 pipeline_extension:
   - read_input_data_p:
@@ -83,12 +83,13 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*, you have two options:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1.yaml
 ```
 or
-```
-./pipeline_runtime.py ../mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1b.yaml
+
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_fronius/fronius_use_case2.yaml ../mcp_use_case_fronius/fronius_use_case1b.yaml
 ```

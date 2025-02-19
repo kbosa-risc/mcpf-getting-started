@@ -1,9 +1,9 @@
-input_path: 'c:\Projects\risc_dse\data_fronius\input_files'
-output_path: 'c:\Projects\risc_dse\data_fronius\parquet_files'
+input_path: '../data_fronius/input_files'
+output_path: '../data_fronius/parquet_files'
 input_file_name: '*.tar.gz'
 entry_point: 'unzip_p'
 tmp_paths:
-  - 'c:\Projects\risc_dse\data_fronius\csv_files'
+  - '../data_fronius/csv_files'
 imports:
   - mcp_use_case_fronius.io_functions
   - mcp_use_case_fronius.transformation_functions
