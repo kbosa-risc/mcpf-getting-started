@@ -4,7 +4,7 @@ Content of the configuration file:
 
 ```yaml
 
-input_path: &base_dir 'C:\Workspace\mjahn\risc_dse\configurable_pipeline_frm\src\python\mcp_use_case_testing_duckdb'
+input_path: &base_dir 'mcp_use_case_testing_duckdb'
 output_path: *base_dir
 entry_point: 'main_p'
 imports:
@@ -13,7 +13,7 @@ imports:
 pipelines:
   - main_p:
       - read_csv: 
-          - { 'input_path': '..\mcp_use_case_testing_duckdb', 'file_name': 'testing_csv.csv'}
+          - { 'input_path': 'mcp_use_case_testing_duckdb', 'file_name': 'testing_csv.csv'}
       - df_sql_statement:
           - { 'SQL_STMT': 'SELECT * FROM data '}
       - print_to_stdout: ~
@@ -26,8 +26,8 @@ None
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
 ```bash
-python ./pipeline_runtime.py ../mcp_use_case_testing_duckdb/testing_duckdb_use_case.yaml
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_testing_duckdb/testing_duckdb_use_case.yaml
 ```

@@ -1,4 +1,4 @@
-input_path: &base_dir 'C:\Workspace\mjahn\risc_dse\configurable_pipeline_frm\src\python\mcp_use_case_testing_duckdb'
+input_path: &base_dir 'mcp_use_case_testing_duckdb'
 output_path: *base_dir
 entry_point: 'main_p'
 imports:
@@ -9,7 +9,7 @@ pipelines:
   - main_p:
       - create_test_csv_data: ~
       - read_csv: 
-          - { 'input_path': '..\mcp_use_case_testing_duckdb', 'file_name': 'testing_csv.csv'}
+          - { 'input_path': 'mcp_use_case_testing_duckdb', 'file_name': 'testing_csv.csv'}
       - print_to_stdout: ~
       - df_sql_statement:
           - { 'SQL_STMT': 'SELECT * FROM data where id > 50 and id < 150;'}
