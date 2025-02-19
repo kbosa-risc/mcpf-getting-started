@@ -14,9 +14,9 @@ from pathlib import Path
 from toolz import pipe
 import importlib
 import pandas as pd
-import pipeline_constants as constants
-import pipeline_routines as routines
-import pipeline_singletons as singletons
+import mcp_frm.pipeline_constants as constants
+import mcp_frm.pipeline_routines as routines
+import mcp_frm.pipeline_singletons as singletons
 import sys
 import os.path
 import dataclasses
@@ -52,13 +52,22 @@ class PipelineConfig:
     database_configs: Optional[List[DatabaseConfig]] = field(default=None)
 
 
-def load_pipeline_config(argv: list[str]) -> PipelineConfig:
+def load_pipeline_config(args: Optional[List[str]]) -> PipelineConfig:
     """
-    It uses the "lasagna" package to load the yaml pipline configuration files and compose a single code pipeline
-    configuration from them.
+    Loads the pipeline configuration using the "lasagna" package to parse YAML configuration files and compose a single code pipeline configuration.
+
+    Args:
+        args (Optional[List[str]]): List of command-line arguments. If None or empty, default configuration is used. Otherwise, the list contains paths to YAML configuration files.
+
+    Returns:
+        PipelineConfig: A dataclass containing the merged pipeline configuration.
+
+    Raises:
+        FileNotFoundError: If any of the provided YAML configuration files do not exist.
+        NotImplementedError: If the configuration is missing required fields such as 'imports', 'pipelines', or 'entry_point'.
     """
     # set the environment variable with a prefix
-    if len(argv) == 1:
+    if not args or len(args) == 0:
         return lasagna.build(
             PipelineConfig,
             [
@@ -70,7 +79,7 @@ def load_pipeline_config(argv: list[str]) -> PipelineConfig:
             ],
         )
     else:
-        converted_list = map(Path, argv[1:])
+        converted_list = map(Path, args)
         yaml_layers = map(layer.YamlLayer, converted_list)
         l_config = lasagna.build(
             PipelineConfig,
@@ -235,7 +244,7 @@ def run(*args: str) -> None:
     for arg in args:
         if not os.path.isfile(arg):
             raise FileNotFoundError("Error: config file " + arg + " does not exist.")
-    c = load_pipeline_config(sys.argv)
+    c = load_pipeline_config(args)
     if not c.imports or not c.pipelines or not c.entry_point:
         raise NotImplementedError("Error: Missing 'imports', 'pipelines' or 'entry_point' in the config file.")
     else:

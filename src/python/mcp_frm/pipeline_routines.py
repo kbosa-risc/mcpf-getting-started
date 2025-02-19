@@ -1,7 +1,7 @@
 from typing import Any
-import pipeline_constants as constants
+import mcp_frm.pipeline_constants as constants
 import json
-import pipeline_singletons as singleton
+import mcp_frm.pipeline_singletons as singleton
 import inspect
 import sys
 
