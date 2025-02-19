@@ -5,11 +5,11 @@ parquet_engine = "pyarrow"
 
 class Paths:
     ## RISC Datastore house
-    nas_hemeta_dir = Path("Z:\LI\he_metafacturing")
+    nas_hemeta_dir = Path(r"Z:\LI\he_metafacturing")
     nas_hemeta_dir_full = Path(r"\\risc.local\public\publicnas\LI\he_metafacturing")
 
     ## Main Datastore directory
-    data_local = Path(__file__).parents[3] / "data"
+    data_local = Path("/tmp") / "data"
     logs = Path(__file__).parents[1] / "logs"
     LTH_profile_data_log = logs / "lth_profile_data.log"
 
