@@ -25,10 +25,10 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_santub/santub_use_case1.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_santub/santub_use_case1.yaml
 ```
 
 # SanTub Use Case 2: Convert Data of Excel Worksheets into parquet files (one file per bridge per build part)
@@ -53,8 +53,8 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_santub/santub_use_case2.yaml ../mcp_santub/santub_use_case1.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_santub/santub_use_case2.yaml mcp_santub/santub_use_case1.yaml
 ```

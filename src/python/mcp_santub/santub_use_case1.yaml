@@ -1,5 +1,5 @@
-input_path: 'c:\Projects\risc_dse\data_santub\excel_files'
-output_path: 'c:\Projects\risc_dse\data_santub\parquet_files'
+input_path: '../data_santub/excel_files'
+output_path: '../data_santub/parquet_files'
 entry_point: 'prepare_reports_p'
 further_configuration:
   - default_value_note: 1

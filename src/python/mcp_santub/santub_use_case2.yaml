@@ -1,4 +1,4 @@
-output_path: 'c:\Projects\risc_dse\data_santub\parquet_files_for_classifiers'
+output_path: '../data_santub/parquet_files_for_classifiers'
 further_configuration:
   - default_value_note: 1
   - header:
