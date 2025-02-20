@@ -1,4 +1,4 @@
-input_path: &base_dir 'c:\Projects\risc_dse\configurable_pipeline_frm\src\python\mcp_use_case_UPO\data'
+input_path: &base_dir 'mcp_use_case_UPO/data'
 output_path: *base_dir
 entry_point: 'EQE_p'
 further_configuration:
@@ -12,12 +12,12 @@ pipelines:
   - EQE_p:
     - read_help_tables_p: ~
     - list_dir:
-      - {input_path: 'EQE\data\dut',
+      - {input_path: 'EQE/data/dut',
          relative_path: True,
          output_for_iteration: True}
     - loop: read_dut_files_p
     - list_dir:
-      - {input_path: 'EQE\data\calibration_fotodiode',
+      - {input_path: 'EQE/data/calibration_fotodiode',
          relative_path: True,
          output_for_iteration: True}
     - loop: read_fotodiode_files_p
@@ -42,7 +42,7 @@ pipelines:
 
   - read_dut_files_p:
     - read_csv:
-      - {input_path: 'EQE\data\dut',
+      - {input_path: 'EQE/data/dut',
          separator: '\t| ',
          skip_rows: 1,
          engine: 'python'}
@@ -51,7 +51,7 @@ pipelines:
 
   - read_fotodiode_files_p:
     - read_csv:
-      - {input_path: 'EQE\data\calibration_fotodiode',
+      - {input_path: 'EQE/data/calibration_fotodiode',
          separator: '\t| ',
          skip_rows: 1,
          engine: 'python' }

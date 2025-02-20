@@ -15,10 +15,10 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_use_case_UPO/upo_use_case1.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_UPO/upo_use_case1.yaml
 ```
 
 # UPO 2nd Use case, Output II: Calc. EQE Percentage
@@ -60,8 +60,8 @@ The output is going to be generated into the location given in the part *output_
 
 ## How to Start
 
-Assuming you are in the directory *mcp_frm*:
+Assuming you are in the directory `configurable_pipeline_frm/src/python`:
 
-```
-./pipeline_runtime.py ../mcp_use_case_UPO/upo_use_case2.yaml ../mcp_use_case_UPO/upo_use_case1.yaml
+```sh
+poetry run python mcp_frm/pipeline_runtime.py mcp_use_case_UPO/upo_use_case2.yaml mcp_use_case_UPO/upo_use_case1.yaml
 ```
