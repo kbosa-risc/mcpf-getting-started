@@ -1,0 +1,67 @@
+# includes from the global ci-templates repository
+include:
+  - project: 'common/ci-templates'
+    ref: main
+    file: '/devops/container/build.yml'
+  - project: 'common/ci-templates'
+    ref: main
+    file: '/devops/python/build-and-publish-pipeline.yml'
+
+# optional - override the default values, if specified
+variables:
+  REGISTRY_BASE_URL: ${CI_REGISTRY_IMAGE}/mcp
+  PYTHON_WORKING_DIRECTORY: "configurable_pipeline_frm/src/python"
+  # define a specific python version. Will be replaced in a future version by configuring pyenv in pyproject.toml
+  PYTHON_VERSION: '3.10'
+  # defined image for python testing - should be able to run all python stuff
+  PYTHON_IMAGE: ${REGISTRY_BASE_URL}/test
+
+stages:
+  - provision
+  - sast
+  - test
+  - build
+  - publish
+
+build-base-image:
+  stage: provision
+  needs: []
+#  rules:
+#    - changes:
+#      - $PYTHON_WORKING_DIRECTORY/poetry.lock
+#      - $PYTHON_WORKING_DIRECTORY/Dockerfile-base
+  extends:
+    - .kaniko-build-image
+  variables:
+    IMAGE_NAME: ${REGISTRY_BASE_URL}/base
+    DOCKERFILE: Dockerfile-base
+    WORKING_DIRECTORY: ${CI_PROJECT_DIR}/${PYTHON_WORKING_DIRECTORY}
+
+build-test-image:
+  stage: provision
+  needs: []
+#  rules:
+#    - changes:
+#      - $PYTHON_WORKING_DIRECTORY/poetry.lock
+#      - $PYTHON_WORKING_DIRECTORY/Dockerfile-test
+  extends:
+    - .kaniko-build-image
+  variables:
+    IMAGE_NAME: ${REGISTRY_BASE_URL}/test
+    DOCKERFILE: Dockerfile-test
+    WORKING_DIRECTORY: ${CI_PROJECT_DIR}/${PYTHON_WORKING_DIRECTORY}
+
+build-cuda-image:
+  stage: provision
+  needs: []
+#  rules:
+#    - changes:
+#      - $PYTHON_WORKING_DIRECTORY/poetry.lock
+#      - $PYTHON_WORKING_DIRECTORY/Dockerfile-cuda
+  extends:
+    - .kaniko-build-image
+  variables:
+    IMAGE_NAME: ${REGISTRY_BASE_URL}/cuda
+    DOCKERFILE: Dockerfile-cuda
+    WORKING_DIRECTORY: ${CI_PROJECT_DIR}/${PYTHON_WORKING_DIRECTORY}
+
