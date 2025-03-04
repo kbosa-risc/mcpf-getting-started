@@ -201,9 +201,11 @@ docker run -it --rm --name mcp-test registry.risc-software.at/risc_ds/risc_dse/m
 
 You can mount your source directory into the test container and run `pytest` or invoke the pipeline script from within the container while using your latest code and configuration changes.
 
+> **_NOTE:_** We bind mount each directory individually into the container's `/repo` base directory. Otherwise, the test files from the `examples` image would be shadowed by the bind mount.
+
 ```sh
 cd /path/to/checked/out/configurable_pipeline_frm/src/python
-docker run -it --rm --name mcp-test -v .:/repo registry.risc-software.at/risc_ds/risc_dse/mcp/test
+docker run -it --rm --name mcp-test $({ find -mindepth 1 -maxdepth 1  \! -name mcp_use_case_UPO \! -name mcp_use_case_dot_net -printf '%P\n'; find mcp_use_case_UPO -mindepth 1 -maxdepth 1  ; find mcp_use_case_dot_net -mindepth 1 -maxdepth 1 ; } | sed 's,^.*$,-v '"$(pwd)"'/\0:/repo/\0,') registry.risc-software.at/risc_ds/risc_dse/mcp/test
 ```
 
 Then run `pytest` from within the docker container or run any python script.
