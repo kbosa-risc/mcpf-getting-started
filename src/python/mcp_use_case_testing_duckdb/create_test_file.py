@@ -34,7 +34,7 @@ def create_test_csv_data(data: dict[str, Any]) -> dict[str, Any]:
         dataframe = pd.DataFrame({
             'id': np.arange(N),
             'value1': np.random.rand(N),
-            'value2': np.random.rand(N)
+            'value2': np.random.rand(N),
         })
 
         dataframe.to_csv(path, index=False)

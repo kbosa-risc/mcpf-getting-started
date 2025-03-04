@@ -17,5 +17,5 @@ class CSV_FILE_STRUCTURE:
     columns = {
         "id": "int",
         "value1": "float",
-        "value2": "float"
+        "value2": "float",
     }
