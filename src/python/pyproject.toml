@@ -70,6 +70,12 @@ test = "pytest"
 # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
 [tool.black]
 line-length = 120
+extend-exclude = """
+  (mcp_general_functions/mcp_general_db\\.py
+  |mcp_use_case_UPO/EQE_computations\\.py
+  |mcp_general_functions/mcp_general_transformations\\.py
+  |mcp_general_functions/mcp_general_io\\.py
+  )"""
 
 [build-system]
 requires = ["poetry-core>=1.1.14"]
