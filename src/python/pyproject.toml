@@ -48,6 +48,7 @@ ruff = "^0.0.259"
 
 [tool.ruff]
 line-length = 120
+ignore = ["D207", "D208", "E402", "E501", "E722", "E741", "E731", "F841"]
 
 [tool.isort]
 profile = "black"
