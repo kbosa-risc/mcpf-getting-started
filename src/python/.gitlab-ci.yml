@@ -1,10 +1,10 @@
 # includes from the global ci-templates repository
 include:
   - project: 'common/ci-templates'
-    ref: tags/0.5.11
+    ref: 0.5.11
     file: '/devops/container/build.yml'
   - project: 'common/ci-templates'
-    ref: tags/0.5.11
+    ref: 0.5.11
     file: '/devops/python/build-and-publish-pipeline.yml'
 
 # optional - override the default values, if specified
