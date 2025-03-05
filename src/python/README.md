@@ -208,6 +208,14 @@ cd /path/to/checked/out/configurable_pipeline_frm/src/python
 docker run -it --rm --name mcp-test $({ find -mindepth 1 -maxdepth 1  \! -name mcp_use_case_UPO \! -name mcp_use_case_dot_net -printf '%P\n'; find mcp_use_case_UPO -mindepth 1 -maxdepth 1  ; find mcp_use_case_dot_net -mindepth 1 -maxdepth 1 ; } | sed 's,^.*$,-v '"$(pwd)"'/\0:/repo/\0,') registry.risc-software.at/risc_ds/risc_dse/mcp/test
 ```
 
+Alternatively, invoke the script
+
+```sh
+./docker-run-live.sh
+```
+
+It will build the test image if it doesn't exist yet.
+
 Then run `pytest` from within the docker container or run any python script.
 
 
