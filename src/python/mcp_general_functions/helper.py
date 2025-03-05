@@ -1,11 +1,10 @@
 import pandas as pd
-import mcp_general_functions.constants as constants
 import psycopg2
 
+import mcp_general_functions.constants as constants
 
-def vlookup(
-    search_value: float, table: pd.DataFrame, index_column: int, target_column: int
-):
+
+def vlookup(search_value: float, table: pd.DataFrame, index_column: int, target_column: int):
     """
     Performs a vertical lookup (similar to Excel's VLOOKUP function) to find a value in a DataFrame.
 
@@ -48,6 +47,7 @@ def convert_second_to_ms(timestamp: int):
     #  0.000625
     return timestamp * 1000 * 1000
 
+
 def create_db_table_if_not_exists():
     """Creates database table if not exists
 
@@ -66,7 +66,7 @@ def create_db_table_if_not_exists():
         database=db_config.database,
         user=db_config.user,
         password=db_config.password,
-        port=db_config.port
+        port=db_config.port,
     )
 
     try:

@@ -6,6 +6,7 @@ class SingletonMeta(type):
     """
     This is a thread-safe implementation of Singleton.
     """
+
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
@@ -19,6 +20,7 @@ class LoopIterators(metaclass=SingletonMeta):
     """
     This is a singleton class to implicitly providing the loop iterators.
     """
+
     def __init__(self):
         self.listsOfLoopIterators = []
         self.iterator = None
@@ -84,6 +86,7 @@ class Arguments(metaclass=SingletonMeta):
     """
     This is a singleton class to implicitly providing function arguments given in the yaml configuration.
     """
+
     def __init__(self):
         self.current_param_lists = None
         self.buffered_param_lists = []
@@ -130,7 +133,7 @@ class Arguments(metaclass=SingletonMeta):
         At each execution of a loop kernel, the list of arguments of its functions must be reinitialized.
         This is done by this function.
         """
-        self.current_param_lists = self.param_lists_of_loops[self.current_dept-1].copy()
+        self.current_param_lists = self.param_lists_of_loops[self.current_dept - 1].copy()
 
     def restore_last_buffered_argument_list(self):
         """
@@ -140,5 +143,5 @@ class Arguments(metaclass=SingletonMeta):
         self.current_param_lists = self.buffered_param_lists.pop()
         self.current_dept -= 1
         if self.current_dept == 0:
-            del self.param_lists_of_loops[:self.max_dept]
+            del self.param_lists_of_loops[: self.max_dept]
             self.max_dept = 0

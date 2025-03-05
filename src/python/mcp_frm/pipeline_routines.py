@@ -1,9 +1,10 @@
-from typing import Any
-import mcp_frm.pipeline_constants as constants
-import json
-import mcp_frm.pipeline_singletons as singleton
 import inspect
+import json
 import sys
+from typing import Any
+
+import mcp_frm.pipeline_constants as constants
+import mcp_frm.pipeline_singletons as singleton
 
 
 def get_meta_data(data: dict[str, Any]) -> dict[str, Any]:
@@ -124,10 +125,10 @@ def get_db_config(meta: dict[str, Any], db_type: str) -> dict[str, Any] | None:
         return None
     ret_val_dict: dict[str, Any] = meta[constants.DB_CONFIG][0]
     index = 1
-    while ret_val_dict['type'] != db_type and index < len(meta[constants.DB_CONFIG]):
+    while ret_val_dict["type"] != db_type and index < len(meta[constants.DB_CONFIG]):
         ret_val_dict = meta[constants.DB_CONFIG][index]
         index += 1
-    if ret_val_dict['type'] == db_type:
+    if ret_val_dict["type"] == db_type:
         return ret_val_dict
     else:
         return None

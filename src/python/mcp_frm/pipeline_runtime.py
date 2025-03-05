@@ -3,28 +3,27 @@
 # config levels
 # more and embedded loops (list of loop list and iterator list)
 
+import dataclasses
+import importlib
 import json
+import os.path
+import sys
 from dataclasses import dataclass, field
-from typing import Any
+from pathlib import Path
+from typing import Any, List, Optional
 
+import pandas as pd
 import risc_lasagna as lasagna
 import risc_lasagna.layer as layer
-from typing import Optional, List
-from pathlib import Path
 from toolz import pipe
-import importlib
-import pandas as pd
+
 import mcp_frm.pipeline_constants as constants
 import mcp_frm.pipeline_routines as routines
 import mcp_frm.pipeline_singletons as singletons
-import sys
-import os.path
-import dataclasses
-
 
 dept_of_nested_loops = 0
 current_max_dept_of_nested_loops = 0
-loop_kernel_pipelines = []    # it contains the child pipeline of loops in the order of execution
+loop_kernel_pipelines = []  # it contains the child pipeline of loops in the order of execution
 
 
 @dataclass
@@ -73,7 +72,7 @@ def load_pipeline_config(args: Optional[List[str]]) -> PipelineConfig:
             [
                 layer.DataClassDefaultLayer(
                     PipelineConfig(
-                        '.', '.', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], '', []
+                        ".", ".", "default_p", [], [{"default_p": [{"version": "~"}, {"help": "~"}]}], "", []
                     )
                 ),
             ],
@@ -87,10 +86,10 @@ def load_pipeline_config(args: Optional[List[str]]) -> PipelineConfig:
                 *yaml_layers,
                 layer.DataClassDefaultLayer(
                     PipelineConfig(
-                        '.', '.', 'default_p', [], [{'default_p': [{'version': '~'}, {'help': '~'}]}], '', []
+                        ".", ".", "default_p", [], [{"default_p": [{"version": "~"}, {"help": "~"}]}], "", []
                     )
                 ),
-            ]
+            ],
         )
         first_element = True
         for sub_pipeline in l_config.pipelines:
@@ -158,11 +157,12 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def validate_pipeline(
-            config: PipelineConfig,
-            current_pipeline: str,
-            modules: dict,
-            current_param_lists: list,
-            param_lists_of_loops: list[list]) -> list:
+    config: PipelineConfig,
+    current_pipeline: str,
+    modules: dict,
+    current_param_lists: list,
+    param_lists_of_loops: list[list],
+) -> list:
     """
     This function compose the code pipeline and pipeline of the loop kernels according the given yaml configuration,
     stores the function arguments given in the yaml configuration in a structured way and
@@ -179,18 +179,15 @@ def validate_pipeline(
     pipeline = []
     for func_const in config.pipelines[0][current_pipeline]:
         for func in func_const:
-            if func[:len(constants.ARG_KEYWORD_LOOP)] == constants.ARG_KEYWORD_LOOP:
+            if func[: len(constants.ARG_KEYWORD_LOOP)] == constants.ARG_KEYWORD_LOOP:
                 child_pipeline = [init_iterator]
                 kernel_arguments_lists = []
                 param_lists_of_loops.append(kernel_arguments_lists)
                 loop_kernel_pipelines.append(child_pipeline)
                 pipeline.append(loop_interpreter)
-                child_pipeline.extend(validate_pipeline(
-                        config,
-                        func_const[func],
-                        modules,
-                        kernel_arguments_lists,
-                        param_lists_of_loops))
+                child_pipeline.extend(
+                    validate_pipeline(config, func_const[func], modules, kernel_arguments_lists, param_lists_of_loops)
+                )
                 # f = getattr(this_module, 'init_iterator')
             elif func in config.pipelines[0]:
                 sub_pipeline = validate_pipeline(config, func, modules, current_param_lists, param_lists_of_loops)
@@ -237,6 +234,7 @@ def run_pipeline(config: PipelineConfig, pipeline: list, current_param_lists: li
     retval = pipe(data, *pipeline)
     return 0
 
+
 def run(*args: str) -> None:
     """
     Run pipeline programmatically as if called from command line
@@ -260,6 +258,7 @@ def run(*args: str) -> None:
         p.current_param_lists = param_lists
         p.param_lists_of_loops = arguments_of_sub_pipelines
         run_pipeline(c, pipeline_string, param_lists)
+
 
 if __name__ == "__main__":
     run(*sys.argv[1:])

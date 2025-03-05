@@ -1,8 +1,10 @@
-import pandas as pd
+from datetime import datetime, timedelta, timezone
 from typing import Any
+
+import pandas as pd
+
 import mcp_frm.pipeline_routines as routines
 import mcp_use_case_fronius.constants as constants
-from datetime import datetime, timedelta, timezone
 from utils.conf import Formats
 
 
@@ -37,13 +39,15 @@ def resample_df(df: pd.DataFrame, index_value: str, frequency: float) -> pd.Data
 
 def merging_columns(data: dict[str, Any]) -> dict[str, Any]:
     meta = routines.get_meta_data(data)  # code change
-    end_date = datetime.strptime(meta['end_date'], Formats.date_time_format_in_CSVs).replace(tzinfo=timezone.utc)  # code change
+    end_date = datetime.strptime(meta["end_date"], Formats.date_time_format_in_CSVs).replace(
+        tzinfo=timezone.utc
+    )  # code change
 
     temp_df = pd.DataFrame()
-    highest_frequency = min(data['sample_rate_dict']["srate"])
+    highest_frequency = min(data["sample_rate_dict"]["srate"])
     main_df = pd.DataFrame()
-    for nr, name in enumerate(data['sample_rate_dict']["name"]):
-        temp_df = data['sample_rate_dict']["df"][nr]
+    for nr, name in enumerate(data["sample_rate_dict"]["name"]):
+        temp_df = data["sample_rate_dict"]["df"][nr]
         df = temp_df.copy()
         df = resample_df(df, "time", highest_frequency)
         if nr == 0:
@@ -62,6 +66,6 @@ def merging_columns(data: dict[str, Any]) -> dict[str, Any]:
     main_df = main_df.replace("On", True)
     main_df = main_df.replace("Off", False)
 
-    data['main_df'] = main_df   # code change
+    data["main_df"] = main_df  # code change
     routines.set_meta_in_data(data, meta)  # code change
     return data

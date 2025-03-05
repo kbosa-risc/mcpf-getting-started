@@ -1,7 +1,5 @@
 # ruff: noqa: E741
 
-import pytest
-
 
 def test_fronius_use_case1(run_pipeline) -> None:
     run_pipeline("mcp_use_case_fronius/fronius_use_case1.yaml")

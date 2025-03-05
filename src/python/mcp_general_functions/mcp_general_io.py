@@ -6,14 +6,16 @@ The common in these functions is that they can handle all of the following:
 - loop iterators
 '''
 
-import mcp_frm.pipeline_routines as routines
-import pandas as pd
-from typing import Any
 import os
-import mcp_general_functions.constants as constants
 import tarfile
-import pyarrow.parquet as pq
+from typing import Any
+
+import pandas as pd
 import pyarrow as pa
+import pyarrow.parquet as pq
+
+import mcp_frm.pipeline_routines as routines
+import mcp_general_functions.constants as constants
 
 
 def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:

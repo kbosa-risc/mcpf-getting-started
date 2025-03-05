@@ -1,9 +1,10 @@
-import duckdb
-import mcp_frm.pipeline_routines as routines
-import pandas as pd
 from typing import Any
-from mcp_general_functions import constants
-from mcp_general_functions import helper
+
+import duckdb
+import pandas as pd
+
+import mcp_frm.pipeline_routines as routines
+from mcp_general_functions import constants, helper
 
 
 def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
