@@ -85,6 +85,7 @@ python-test:
   script:
     - cd /repo
     - python -m pytest -ra --junitxml=python-junit.xml --cov --cov-report=xml --cov-report term
+    - cp -p python-junit.xml coverage.xml ${CI_PROJECT_DIR}/${PYTHON_WORKING_DIRECTORY}
 
 # TODO! Remove when packaging has been decided on
 publish-to-risc-pypi:
