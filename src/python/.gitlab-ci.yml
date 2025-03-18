@@ -76,7 +76,7 @@ build-cuda-image:
 
 # Need duplication due to different working directory
 python-test:
-  needs: ["python-linter-check"]
+  needs: []
   stage: test
   extends:
     - .python-test-with-poetry
