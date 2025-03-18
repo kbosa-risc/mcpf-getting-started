@@ -79,6 +79,6 @@ publish-to-risc-pypi:
   needs: ["build-wheel-poetry"]
   stage: publish
   before_script:
-    - : # empty command
+    - ":"
   script:
     - "echo 'Not published yet'"
