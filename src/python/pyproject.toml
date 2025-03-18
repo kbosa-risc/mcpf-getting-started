@@ -62,6 +62,9 @@ _check_format = "black --check ."
 _check_sort_imports = "isort --check ."
 _check_lint = "ruff check ."
 
+# Fake tasks for latest pipeline that didn't exist in former config
+check_licenses = ":"
+
 docs = "mkdocs serve"
 precommit = ["_format", "_sort_imports", "_lint"]
 check = ["_check_format", "_check_sort_imports", "_check_lint"]
