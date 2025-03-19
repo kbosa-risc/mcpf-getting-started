@@ -10,6 +10,10 @@ testpaths = [
 norecursedirs = [
 
 ]
+addopts = [
+    "--import-mode=importlib",
+    "--ignore=mcp_use_case_dot_net",
+]
 
 [tool.poetry]
 name = "mcp_frm"
