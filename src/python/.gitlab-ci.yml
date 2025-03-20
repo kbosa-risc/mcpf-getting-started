@@ -60,20 +60,6 @@ build-test-image:
     DOCKERFILE: Dockerfile-test
     WORKING_DIRECTORY: ${CI_PROJECT_DIR}/${PYTHON_WORKING_DIRECTORY}
 
-build-cuda-image:
-  stage: provision
-  needs: []
-#  rules:
-#    - changes:
-#      - $PYTHON_WORKING_DIRECTORY/poetry.lock
-#      - $PYTHON_WORKING_DIRECTORY/Dockerfile-cuda
-  extends:
-    - .kaniko-build-image
-  variables:
-    IMAGE_NAME: ${REGISTRY_BASE_URL}/cuda
-    DOCKERFILE: Dockerfile-cuda
-    WORKING_DIRECTORY: ${CI_PROJECT_DIR}/${PYTHON_WORKING_DIRECTORY}
-
 # Need duplication due to different working directory
 python-test:
   needs: []
