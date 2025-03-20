@@ -32,7 +32,7 @@ see the directory [**mcp_general_functions**](mcp_general_functions/README.md);
 
 ### Examples
 
-Assuming you are in the directory `configurable_pipeline_frm/src/python`:
+Assuming you are in the directory `mcp/src/python`:
 
 ```sh
 mcp_frm/pipeline_runtime.py mcp_use_case_fronius/fronius_use_case1.yaml
@@ -46,7 +46,7 @@ mcp_frm/pipeline_runtime.py \
 
 ## Getting Started
 
-To Execute your first pipeline issue the following statement from the directory `configurable_pipeline_frm/src/python`, which will print the content of the parent directory 
+To Execute your first pipeline issue the following statement from the directory `mcp/src/python`, which will print the content of the parent directory 
 and of its sub-directories of the parent directory to the standard output:
 
 ```sh
@@ -59,7 +59,7 @@ For particular yaml configuration examples, see the use cases. For coding guidel
 
 To run it with poetry:
 ```sh
-cd .../risc_dse/configurable_pipeline_frm/src/python/
+cd .../risc_dse/mcp/src/python/
 poetry env use "path_with_python_interpreter_binary"
 poetry shell
 poetry install
@@ -124,7 +124,7 @@ The hierarchy under test already matches the final directory layout in the `exam
         └── vdl_urf_8.csv
 ```
 
-The directory `repo` in the docker image is the equivalent of the locally checked out directory `configurable_pipeline_frm/src/python`. Later build stages will populate the `repo` directory with the related repository artefacts.
+The directory `repo` in the docker image is the equivalent of the locally checked out directory `mcp/src/python`. Later build stages will populate the `repo` directory with the related repository artefacts.
 
 ```sh
 # (local) Copy all data not stored elsewhere from the artificial authoritative location
@@ -178,8 +178,8 @@ In order to run `pytest` test cases as well as running the mcp pipeline on test 
 
 ```sh
 # (wsl2)
-cd /path/to/checked/out/configurable_pipeline_frm/src/python
-docker build -f Dockerfile-test -t registry.risc-software.at/risc_ds/risc_dse/mcp/test .
+cd /path/to/checked/out/mcp/src/python
+docker build -f Dockerfile-test -t registry.risc-software.at/risc_de/mcp/mcp/test .
 ```
 
 ### Run tests within test image
@@ -188,13 +188,13 @@ You can run the `pytest` test cases locally completely isolated within the test 
 
 ```sh
 # (wsl2)
-docker run -it --rm --name mcp-test registry.risc-software.at/risc_ds/risc_dse/mcp/test pytest
+docker run -it --rm --name mcp-test registry.risc-software.at/risc_de/mcp/mcp/test pytest
 ```
 
 To inspect the image (get a bash) use instead:
 ```sh
 # (wsl2)
-docker run -it --rm --name mcp-test registry.risc-software.at/risc_ds/risc_dse/mcp/test
+docker run -it --rm --name mcp-test registry.risc-software.at/risc_de/mcp/mcp/test
 ```
 
 ### Develop within test image
@@ -204,8 +204,8 @@ You can mount your source directory into the test container and run `pytest` or 
 > **_NOTE:_** We bind mount each directory individually into the container's `/repo` base directory. Otherwise, the test files from the `examples` image would be shadowed by the bind mount.
 
 ```sh
-cd /path/to/checked/out/configurable_pipeline_frm/src/python
-docker run -it --rm --name mcp-test $({ find -mindepth 1 -maxdepth 1  \! -name mcp_use_case_UPO \! -name mcp_use_case_dot_net -printf '%P\n'; find mcp_use_case_UPO -mindepth 1 -maxdepth 1  ; find mcp_use_case_dot_net -mindepth 1 -maxdepth 1 ; } | sed 's,^.*$,-v '"$(pwd)"'/\0:/repo/\0,') registry.risc-software.at/risc_ds/risc_dse/mcp/test
+cd /path/to/checked/out/mcp/src/python
+docker run -it --rm --name mcp-test $({ find -mindepth 1 -maxdepth 1  \! -name mcp_use_case_UPO \! -name mcp_use_case_dot_net -printf '%P\n'; find mcp_use_case_UPO -mindepth 1 -maxdepth 1  ; find mcp_use_case_dot_net -mindepth 1 -maxdepth 1 ; } | sed 's,^.*$,-v '"$(pwd)"'/\0:/repo/\0,') registry.risc-software.at/risc_de/mcp/mcp/test
 ```
 
 Alternatively, invoke the script
