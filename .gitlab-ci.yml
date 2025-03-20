@@ -1,0 +1,8 @@
+trigger_child_configurable_pipeline_frm:
+  trigger:
+    include:
+      - local: src/python/.gitlab-ci.yml
+    strategy: depend
+  rules:
+    - changes:
+      - src/python/**/*
