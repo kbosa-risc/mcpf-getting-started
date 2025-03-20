@@ -19,7 +19,7 @@ include:
 # optional - override the default values, if specified
 variables:
   REGISTRY_BASE_URL: ${CI_REGISTRY_IMAGE}/mcp
-  PYTHON_WORKING_DIRECTORY: "configurable_pipeline_frm/src/python"
+  PYTHON_WORKING_DIRECTORY: "src/python"
   # define a specific python version. Will be replaced in a future version by configuring pyenv in pyproject.toml
   PYTHON_VERSION: '3.10'
   # defined image for python testing - should be able to run all python stuff
