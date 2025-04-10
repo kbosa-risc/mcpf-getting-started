@@ -1,4 +1,4 @@
-input_path: &base_dir 'c:\Data'
+input_path: &base_dir '..'
 output_path: *base_dir
 
 pipeline_extension:

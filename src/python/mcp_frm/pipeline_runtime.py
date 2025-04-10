@@ -78,8 +78,12 @@ def load_pipeline_config(args: Optional[List[str]]) -> PipelineConfig:
             ],
         )
     else:
+        extensions = []
         converted_list = map(Path, args)
-        yaml_layers = map(layer.YamlLayer, converted_list)
+        yaml_layers = list(map(layer.YamlLayer, converted_list))
+        for l in yaml_layers[:-1]:
+            if constants.ARG_KEYWORD_PIPELINE_EXT in l.map:
+                extensions.append(l.map[constants.ARG_KEYWORD_PIPELINE_EXT])
         l_config = lasagna.build(
             PipelineConfig,
             [
@@ -101,10 +105,12 @@ def load_pipeline_config(args: Optional[List[str]]) -> PipelineConfig:
 
         del l_config.pipelines[1:]
 
-        if l_config.pipeline_extension and len(l_config.pipeline_extension) > 0:
-            for extension_element in l_config.pipeline_extension:
-                for key in extension_element:
-                    l_config.pipelines[0][key] = extension_element[key]
+        if len(extensions) > 0:
+            for extension in reversed(extensions):
+                if len(extension) > 0:
+                    for extension_element in extension:
+                        for pipeline_element in extension_element:
+                            l_config.pipelines[0][pipeline_element] = extension_element[pipeline_element]
         return l_config
 
 
