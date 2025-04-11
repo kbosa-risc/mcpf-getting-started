@@ -40,7 +40,7 @@ def vertical_concatenation(data: dict[str, Any]) -> dict[str, Any]:
     if iterator:
         arg['input'] = iterator
 
-    if 'left_value' in arg:
+    if 'left_value' in arg and 'input' in arg and data[arg['input']] is not None:
         if arg['left_value'] not in data:
             data[arg['left_value']] = data[arg['input']]
         else:

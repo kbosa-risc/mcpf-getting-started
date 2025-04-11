@@ -11,6 +11,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, List, Optional
+from collections.abc import Callable
 
 import pandas as pd
 import risc_lasagna as lasagna
@@ -22,8 +23,11 @@ import mcp_frm.pipeline_routines as routines
 import mcp_frm.pipeline_singletons as singletons
 
 dept_of_nested_loops = 0
+real_dept_of_loop_kernel_hierarchy = 0
 current_max_dept_of_nested_loops = 0
-loop_kernel_pipelines = []  # it contains the child pipeline of loops in the order of execution
+loop_kernel_pipelines: list[tuple[str, list[Callable]]] = []  # it contains the child pipeline of loops in the order of execution
+
+dict_of_called_pipeline_element: dict[str, int] = {}
 
 
 @dataclass
@@ -120,9 +124,11 @@ def increment_dept_of_nested_loops():
     """
     global current_max_dept_of_nested_loops
     global dept_of_nested_loops
+    global real_dept_of_loop_kernel_hierarchy
     dept_of_nested_loops += 1
-    if dept_of_nested_loops > current_max_dept_of_nested_loops:
-        current_max_dept_of_nested_loops = dept_of_nested_loops
+    real_dept_of_loop_kernel_hierarchy +=1
+    if real_dept_of_loop_kernel_hierarchy > current_max_dept_of_nested_loops:
+        current_max_dept_of_nested_loops = real_dept_of_loop_kernel_hierarchy
 
 
 def init_iterator(data: dict[str, Any]) -> dict[str, Any]:
@@ -140,14 +146,21 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
     """
     This function is used to implement a loop in the code pipeline.
     """
-    global dept_of_nested_loops
+    global dept_of_nested_loops                 # Handling iterator list
     global current_max_dept_of_nested_loops
     global loop_kernel_pipelines
+    global real_dept_of_loop_kernel_hierarchy   # Handling loop kernels
     loop_singleton = singletons.LoopIterators()
     param_singleton = singletons.Arguments()
     if len(loop_kernel_pipelines) > 0:
         increment_dept_of_nested_loops()
-        kernel = loop_kernel_pipelines[dept_of_nested_loops - 1]
+        kernel_entry = loop_kernel_pipelines[real_dept_of_loop_kernel_hierarchy - 1]
+        if kernel_entry[0] not in dict_of_called_pipeline_element:
+            dict_of_called_pipeline_element[kernel_entry[0]] = real_dept_of_loop_kernel_hierarchy
+        else:
+            real_dept_of_loop_kernel_hierarchy = dict_of_called_pipeline_element[kernel_entry[0]]
+            param_singleton.overwrite_current_depth(real_dept_of_loop_kernel_hierarchy-1)
+        kernel = loop_kernel_pipelines[real_dept_of_loop_kernel_hierarchy - 1][1]
         param_singleton.replace_current_argument_lists()
         while loop_singleton.size_of_an_iterator_list(dept_of_nested_loops - 1) > 0:
             data = pipe(data, *kernel)
@@ -155,10 +168,13 @@ def loop_interpreter(data: dict[str, Any]) -> dict[str, Any]:
         param_singleton.restore_last_buffered_argument_list()
         routines.pop_loop_iterator()  # it is needed just in that case if no one used up the iterator
         loop_singleton.remove_an_iterator_list(dept_of_nested_loops - 1)
+        if dept_of_nested_loops == real_dept_of_loop_kernel_hierarchy:
+            real_dept_of_loop_kernel_hierarchy -= 1
         dept_of_nested_loops -= 1
         if dept_of_nested_loops == 0:
             del loop_kernel_pipelines[:current_max_dept_of_nested_loops]
             current_max_dept_of_nested_loops = 0
+            dict_of_called_pipeline_element.clear()
     return data
 
 
@@ -168,6 +184,8 @@ def validate_pipeline(
     modules: dict,
     current_param_lists: list,
     param_lists_of_loops: list[list],
+    evaluated_sub_pipelines=None,  # avoiding to validate recursive calls
+    is_recursive: bool = False
 ) -> list:
     """
     This function compose the code pipeline and pipeline of the loop kernels according the given yaml configuration,
@@ -177,6 +195,8 @@ def validate_pipeline(
     global loop_kernel_pipelines
     # preparing available building blocks
     # this_module = sys.modules[__name__]
+    if evaluated_sub_pipelines is None:
+        evaluated_sub_pipelines = []
     available_functions = {}
     for module in modules:
         function_list = dir(modules[module])
@@ -186,18 +206,35 @@ def validate_pipeline(
     for func_const in config.pipelines[0][current_pipeline]:
         for func in func_const:
             if func[: len(constants.ARG_KEYWORD_LOOP)] == constants.ARG_KEYWORD_LOOP:
-                child_pipeline = [init_iterator]
-                kernel_arguments_lists = []
-                param_lists_of_loops.append(kernel_arguments_lists)
-                loop_kernel_pipelines.append(child_pipeline)
-                pipeline.append(loop_interpreter)
-                child_pipeline.extend(
-                    validate_pipeline(config, func_const[func], modules, kernel_arguments_lists, param_lists_of_loops)
-                )
-                # f = getattr(this_module, 'init_iterator')
+                if not is_recursive:
+                    if func_const[func] in evaluated_sub_pipelines:
+                        is_recursive = True
+                    child_pipeline = [init_iterator]
+                    kernel_arguments_lists = []
+                    param_lists_of_loops.append(kernel_arguments_lists)
+                    loop_kernel_pipelines.append((func_const[func], child_pipeline))
+                    pipeline.append(loop_interpreter)
+                    child_pipeline.extend(
+                        validate_pipeline(config,
+                                          func_const[func],
+                                          modules,
+                                          kernel_arguments_lists,
+                                          param_lists_of_loops,
+                                          evaluated_sub_pipelines + [func_const[func]],
+                                          is_recursive)
+                    )
+                    # f = getattr(this_module, 'init_iterator')
             elif func in config.pipelines[0]:
-                sub_pipeline = validate_pipeline(config, func, modules, current_param_lists, param_lists_of_loops)
-                pipeline.extend(sub_pipeline.copy())
+                if func not in evaluated_sub_pipelines:
+                    evaluated_sub_pipelines.append(func)
+                    sub_pipeline = validate_pipeline(config,
+                                                     func,
+                                                     modules,
+                                                     current_param_lists,
+                                                     param_lists_of_loops,
+                                                     evaluated_sub_pipelines + [func],
+                                                     is_recursive)
+                    pipeline.extend(sub_pipeline.copy())
             else:
                 not_found = True
                 for module in available_functions:

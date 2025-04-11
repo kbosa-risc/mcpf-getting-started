@@ -90,6 +90,7 @@ class Arguments(metaclass=SingletonMeta):
     def __init__(self):
         self.current_param_lists = None
         self.buffered_param_lists = []
+        self.buffered_dept_at_recursion = []
         self.param_lists_of_loops = None
         self.current_dept = 0
         self.max_dept = 0
@@ -115,6 +116,16 @@ class Arguments(metaclass=SingletonMeta):
         else:
             return None
 
+    def overwrite_current_depth(self, new_value: int):
+        # This function is called only in case of recursion.
+        # In this case the parameter queue (as well as the queue the pipeline of the loop kernel)
+        # contains an extra entry (the data of the entry point of the recursion or in other words
+        # the first recursively called loop kernel), that is why max_dept must be greater with 1.
+        if self.current_dept + 1 > self.max_dept:
+            self.max_dept = self.current_dept + 1
+        self.buffered_dept_at_recursion.append(self.current_dept)
+        self.current_dept = new_value
+
     def replace_current_argument_lists(self):
         """
         The arguments for loop kernel are stored in independent lists.
@@ -133,7 +144,10 @@ class Arguments(metaclass=SingletonMeta):
         At each execution of a loop kernel, the list of arguments of its functions must be reinitialized.
         This is done by this function.
         """
-        self.current_param_lists = self.param_lists_of_loops[self.current_dept - 1].copy()
+        if self.current_dept - 1 > 0:
+            self.current_param_lists = self.param_lists_of_loops[self.current_dept - 1].copy()
+        else:
+            self.current_param_lists = self.param_lists_of_loops[0].copy()
 
     def restore_last_buffered_argument_list(self):
         """
@@ -141,7 +155,10 @@ class Arguments(metaclass=SingletonMeta):
         parameter list is re-activated.
         """
         self.current_param_lists = self.buffered_param_lists.pop()
-        self.current_dept -= 1
+        if len(self.buffered_dept_at_recursion) > 0:
+            self.current_dept = self.buffered_dept_at_recursion.pop()
+        else:
+            self.current_dept -= 1
         if self.current_dept == 0:
             del self.param_lists_of_loops[: self.max_dept]
             self.max_dept = 0

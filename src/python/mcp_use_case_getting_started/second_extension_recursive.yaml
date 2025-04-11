@@ -1,0 +1,21 @@
+input_path: &base_dir 'c:\TEST'
+output_path: *base_dir
+
+imports:
+  - mcp_general_functions.mcp_general_io
+  - mcp_general_functions.mcp_general_transformations
+
+pipeline_extension:
+  - list_input_dirs_p:
+      - print_to_stdout: ~
+      - read_csv:
+          - { 'relative_path': True, 'output': 'for_concatenation' }
+      - vertical_concatenation:
+          - { 'input': 'for_concatenation', 'left_value': 'concatenated_content'}
+      - list_dir:
+          - {'output_for_iteration': True }
+      - loop: list_input_dirs_p
+
+  - final_output:
+      - print_to_stdout:
+          - { 'input': 'concatenated_content' }

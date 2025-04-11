@@ -39,7 +39,8 @@ def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     arg = {
         'input': constants.DEFAULT_IO_DATA_LABEL,
-        'output': constants.DEFAULT_IO_DATA_LABEL
+        'output': constants.DEFAULT_IO_DATA_LABEL,
+        'is_literal': False
     }
     # merging default values with current argument values
     if meta[constants.ARGUMENTS]:
@@ -47,8 +48,12 @@ def print_to_stdout(data: dict[str, Any]) -> dict[str, Any]:
     # if the function part of a loop
     if iterator:
         data[arg['input']] = iterator
-    print(data[arg['input']])
-    data[arg['output']] = data[arg['input']]
+    if arg['is_literal']:
+        print(arg['input'])
+        data[arg['output']] = arg['input']
+    elif data[arg['input']] is not None:
+        print(data[arg['input']])
+        data[arg['output']] = data[arg['input']]
     routines.set_meta_in_data(data, meta)
     return data
 
@@ -81,7 +86,7 @@ def list_dir(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     default_input_path = '.'
     if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
-        default_input_path = data.pop(constants.DEFAULT_IO_DATA_LABEL, '.')
+        default_input_path = data[constants.DEFAULT_IO_DATA_LABEL]
     arg = {
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'input_path': default_input_path,
@@ -152,7 +157,7 @@ def unzip(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     default_input_path = '.'
     if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
-        default_input_path = data.pop(constants.DEFAULT_IO_DATA_LABEL, '.')
+        default_input_path = data[constants.DEFAULT_IO_DATA_LABEL]
     arg = {
         'input_path': default_input_path,
         'output_path': '.',
@@ -216,7 +221,7 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     default_input_path = '.'
     if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
-        default_input_path = data.pop(constants.DEFAULT_IO_DATA_LABEL, '.')
+        default_input_path = data[constants.DEFAULT_IO_DATA_LABEL]
     arg = {
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'input_path': default_input_path,
@@ -239,12 +244,15 @@ def read_csv(data: dict[str, Any]) -> dict[str, Any]:
 
     if arg['relative_path']:
         arg['input_path'] = os.path.join(routines.get_current_input_dir(meta), arg['input_path'])
-    data[arg['output']] = pd.read_csv(
+    if not os.path.isdir(arg['input_path']):
+        data[arg['output']] = pd.read_csv(
                                 arg['input_path'],
                                 sep=arg['separator'],
                                 skiprows=arg['skip_rows'],
                                 engine=arg['engine']
-    )
+        )
+    else:
+        data[arg['output']] = None
 
     # general code part 2/2
     routines.set_meta_in_data(data, meta)
@@ -273,7 +281,7 @@ def set_default_file_name_from_data(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     default_input = ''
     if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
-        default_input = data.pop(constants.DEFAULT_IO_DATA_LABEL, '')
+        default_input = data[constants.DEFAULT_IO_DATA_LABEL]
     arg = {
         'input': default_input,
         'output': constants.DEFAULT_OUTPUT_FILE,
@@ -317,7 +325,7 @@ def read_excel_worksheets(data: dict[str, Any]) -> dict[str, Any]:
     # default_arguments_values
     default_input_path = '.'
     if constants.DEFAULT_IO_DATA_LABEL in data and isinstance(data[constants.DEFAULT_IO_DATA_LABEL], str):
-        default_input_path = data.pop(constants.DEFAULT_IO_DATA_LABEL, '.')
+        default_input_path = data[constants.DEFAULT_IO_DATA_LABEL]
     arg = {
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'input_path': default_input_path,
@@ -381,7 +389,7 @@ def write_parquet(data: dict[str, Any]) -> dict[str, Any]:
         'input': constants.DEFAULT_IO_DATA_LABEL,
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'output_path': default_output_path,
-        'file_name': data.pop(constants.DEFAULT_OUTPUT_FILE, ''),
+        'file_name': data[constants.DEFAULT_OUTPUT_FILE],
         'relative_path': False,
         'preserve_index': None
     }
@@ -439,7 +447,7 @@ def write_csv(data: dict[str, Any]) -> dict[str, Any]:
         'input': constants.DEFAULT_IO_DATA_LABEL,
         'output': constants.DEFAULT_IO_DATA_LABEL,
         'output_path': default_output_path,
-        'file_name': data.pop(constants.DEFAULT_OUTPUT_FILE, ''),
+        'file_name': data[constants.DEFAULT_OUTPUT_FILE],
         'relative_path': False,
         'separator': ','
     }

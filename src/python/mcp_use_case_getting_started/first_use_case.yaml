@@ -12,6 +12,7 @@ pipelines:
       - list_dir:
           - { relative_path: True, output_for_iteration: True }
       - loop: list_input_dirs_p
+      - final_output: ~
 
   - list_input_dirs_p:
       - print_to_stdout: ~
@@ -21,3 +22,7 @@ pipelines:
 
   - processing_files_p:
       - print_to_stdout: ~
+
+  - final_output:
+      - print_to_stdout:
+          - {'input': 'done.', 'is_literal': True}
