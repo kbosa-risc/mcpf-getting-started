@@ -1,11 +1,18 @@
-input_path: &base_dir 'c:\TEST'
+input_path: &base_dir '.\testDir'
 output_path: *base_dir
+entry_point: 'preprocessing_p'
 
 imports:
   - mcp_general_functions.mcp_general_io
   - mcp_general_functions.mcp_general_transformations
+  - mcp_use_case_getting_started.prepare_test_env
 
 pipeline_extension:
+  - preprocessing_p:
+      - create_test_env:
+          - {'relative_path': True}
+      - main_p: ~
+
   - list_input_dirs_p:
       - print_to_stdout: ~
       - read_csv:
@@ -16,6 +23,6 @@ pipeline_extension:
           - {'output_for_iteration': True }
       - loop: list_input_dirs_p
 
-  - final_output:
+  - final_steps:
       - print_to_stdout:
           - { 'input': 'concatenated_content' }
