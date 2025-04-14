@@ -1,9 +1,10 @@
-input_path: &base_dir 'c:\TEST'
+input_path: &base_dir '.'
 output_path: *base_dir
 
 pipeline_extension:
   - processing_files_p:
     - print_to_stdout: ~
     - read_csv:
-      - { relative_path: True}
-    - print_to_stdout: ~
+      - {relative_path: True, csv_file_extension_only: True, output: 'csv_output'}
+    - print_to_stdout:
+      - {input: 'csv_output', output: 'csv_output'}

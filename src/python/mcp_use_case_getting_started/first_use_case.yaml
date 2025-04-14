@@ -2,7 +2,7 @@ input_path: &base_dir '.'
 output_path: *base_dir
 entry_point: 'main_p'
 
-further_configuration:
+further_configuration:   # This part only demonstrates, how to define key value pairs, but its content are not used
    - first_key_value_pair: value1
    - second_key_value_pair: value2
 imports:
@@ -15,7 +15,7 @@ pipelines:
       - final_steps: ~
 
   - list_input_dirs_p:
-      - print_to_stdout: ~
+      - processing_files_p: ~
       - list_dir:
           - {'output_for_iteration': True }
       - loop: processing_files_p

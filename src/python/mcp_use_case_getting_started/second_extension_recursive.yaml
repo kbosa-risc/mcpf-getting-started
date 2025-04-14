@@ -10,19 +10,19 @@ imports:
 pipeline_extension:
   - preprocessing_p:
       - create_test_env:
-          - {'relative_path': True}
+          - {relative_path: True}
       - main_p: ~
 
   - list_input_dirs_p:
       - print_to_stdout: ~
       - read_csv:
-          - { 'relative_path': True, 'output': 'for_concatenation' }
+          - {relative_path: True, output: 'for_concatenation' }
       - vertical_concatenation:
-          - { 'input': 'for_concatenation', 'left_value': 'concatenated_content'}
+          - {input: 'for_concatenation', left_value: 'concatenated_content'}
       - list_dir:
-          - {'output_for_iteration': True }
+          - {output_for_iteration: True }
       - loop: list_input_dirs_p
 
   - final_steps:
       - print_to_stdout:
-          - { 'input': 'concatenated_content' }
+          - {input: 'concatenated_content' }
