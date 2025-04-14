@@ -11,7 +11,7 @@ def create_test_env(data: dict[str, Any]) -> dict[str, Any]:
     """
             It creates a test environment for the recursive use case (second_extension_recursive.yaml)
             under the given directory, if it does not exist:
-                - it creates a 5 level deep directory structure and
+                - it creates a five levels deep directory structure and
                 - scatters some generated csv files in it (the content of these files are going to be concatenated).
 
             Yaml args:
