@@ -17,7 +17,7 @@ pipelines:
   - list_input_dirs_p:
       - processing_files_p: ~
       - list_dir:
-          - {'output_for_iteration': True }
+          - {output_for_iteration: True }
       - loop: processing_files_p
 
   - processing_files_p:
@@ -25,4 +25,4 @@ pipelines:
 
   - final_steps:
       - print_to_stdout:
-          - {'input': 'done.', 'is_literal': True}
+          - {input: 'done.', is_literal: True}

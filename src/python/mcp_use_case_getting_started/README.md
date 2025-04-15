@@ -72,7 +72,7 @@ giving the first pipeline configuration). Besides the content of the given direc
 its sub-directory, it additionally displays the content of the listed csv files (if there is any).
 
 This use case uses the generalized implementation of an additionaly python functions, which is called 
-*read_csv* and alos located in [mcp_general_functions.mcp_general_io.py](../mcp_general_functions/mcp_general_io.py).
+*read_csv* and is located in [mcp_general_functions.mcp_general_io.py](../mcp_general_functions/mcp_general_io.py).
 
 Content of the configuration file:
 

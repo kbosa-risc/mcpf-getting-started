@@ -33,7 +33,7 @@ def function_i(data: dict[str, Any]) -> dict[str, Any]:
 
 ## How to Access to the Meta Information
 
-By default the dictionary *data* contains a json string called *meta* which may contain the following elements:
+By default, the dictionary *data* contains a json string called *meta* which may contain the following elements:
 * **input_path**,
 * **output_path**,
 * **tmp_paths**,
@@ -135,7 +135,7 @@ If there is no registered list of iterator values or it is empty, the loop kerne
 
 The framework allows to define embedded loops in a yaml configuration, for instance lets regard the following pipeline which is 
 going to list the content of the input folder given in the **input_path** element and of its sub-folders 
-(for the the complete yaml configuration, see the [getting started use case](../mcp_use_case_getting_started/README.md)).
+(for the complete yaml configuration, see the [getting started use case](../mcp_use_case_getting_started/README.md)).
 
 ```
 pipelines:
@@ -174,7 +174,7 @@ def test2_loop_kernel(data: dict[str, Any]) -> dict[str, Any]:
 Subsequent calls of the *function routines.pop_loop_iterator* returns with 'None' value. So it is the responsibility of the developer to make the current iterator value available 
 for other functions of the loop kernel, if needed.
 
-## Generaly Implemented Routines
+## Generally Implemented Routines
 
 ### Best practice
 
