@@ -3,7 +3,7 @@ from pathlib import Path
 ARG_KEYWORD_LOOP = "loop"
 ARG_KEYWORD_META = "meta"
 ARG_KEYWORD_ARGUMENTS = "arguments"
-ARG_KEYWORD_PIPELINE_EXT = 'pipeline_extension'
+ARG_KEYWORD_PIPELINE_EXT = "pipeline_extension"
 
 DEFAULT_IO_DATA_LABEL = ""
 INPUT_PATH = "input_path"
