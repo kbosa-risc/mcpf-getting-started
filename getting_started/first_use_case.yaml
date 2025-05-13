@@ -6,7 +6,8 @@ further_configuration:   # This part only demonstrates, how to define key value 
    - first_key_value_pair: value1
    - second_key_value_pair: value2
 imports:
-  - mcp_general_functions.mcp_general_io
+  - mcpf_io.io
+  - mcpf_io.pd
 pipelines:
   - main_p:
       - list_dir:

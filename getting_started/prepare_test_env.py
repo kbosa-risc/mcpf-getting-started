@@ -3,8 +3,8 @@ import os
 import random
 from typing import Any
 
-import mcp_frm.pipeline_routines as routines
-import mcp_general_functions.constants as constants
+import mcpf_core.core.routines as routines
+import mcpf_core.func.constants as constants
 
 
 def create_test_env(data: dict[str, Any]) -> dict[str, Any]:
@@ -53,18 +53,18 @@ def create_test_env(data: dict[str, Any]) -> dict[str, Any]:
     if not os.path.isdir(arg["input_path"]):
         list_dir = [
             arg["input_path"],
-            arg["input_path"] + "\\testDir1",
-            arg["input_path"] + "\\testDir1\\testDir11\\testDir111\\testDir1111",
-            arg["input_path"] + "\\testDir1\\testDir11\\testDir112",
-            arg["input_path"] + "\\testDir1\\testDir11\\testDir113",
-            arg["input_path"] + "\\testDir1\\testDir12\\testDir121",
-            arg["input_path"] + "\\testDir1\\testDir12\\testDir122",
-            arg["input_path"] + "\\testDir1\\testDir12\\testDir123\\testDir1231",
-            arg["input_path"] + "\\testDir1\\testDir13",
-            arg["input_path"] + "\\testDir1\\testDir13\\testDir131",
-            arg["input_path"] + "\\testDir2\\testDir21\\testDir211",
-            arg["input_path"] + "\\testDir2\\testDir22\\testDir221\\testDir2211",
-            arg["input_path"] + "\\testDir2\\testDir22\\testDir222",
+            arg["input_path"] + "/testDir1",
+            arg["input_path"] + "/testDir1/testDir11/testDir111/testDir1111",
+            arg["input_path"] + "/testDir1/testDir11/testDir112",
+            arg["input_path"] + "/testDir1/testDir11/testDir113",
+            arg["input_path"] + "/testDir1/testDir12/testDir121",
+            arg["input_path"] + "/testDir1/testDir12/testDir122",
+            arg["input_path"] + "/testDir1/testDir12/testDir123/testDir1231",
+            arg["input_path"] + "/testDir1/testDir13",
+            arg["input_path"] + "/testDir1/testDir13/testDir131",
+            arg["input_path"] + "/testDir2/testDir21/testDir211",
+            arg["input_path"] + "/testDir2/testDir22/testDir221/testDir2211",
+            arg["input_path"] + "/testDir2/testDir22/testDir222",
         ]
         random.seed(0)
         for current_dir in list_dir:

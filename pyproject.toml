@@ -10,17 +10,16 @@ testpaths = [
 norecursedirs = [
 
 ]
-addopts = [
-    "--import-mode=importlib",
-    "--ignore=mcp_use_case_dot_net",
-]
 
 [tool.poetry]
-name = "mcp_frm"
+name = "mcpf-getting-started"
 version = "0.0.0"
-description = "minimalist_configurable_piplelineing_framework"
+description = "Example repository on how to use the minimalist configurable pipelineing framework (MCPF)"
 authors = [
     "Karoly Bosa <karoly.bosa@risc-software.at>"
+]
+packages = [
+    { include = "getting_started" },
 ]
 
 [tool.poetry.dependencies]
@@ -29,20 +28,21 @@ pandas = "^1.5.2"
 numpy = "^1.24.1"
 pyarrow = "^10.0.1"
 h5py = "^3.8.0"
-poethepoet = "^0.19.0"
-black = {extras = ["jupyter"], version = "^23.3.0"}
-scipy = "^1.11.4"
-influxdb-client = "^1.44.0"
 psycopg2-binary = "^2.9.9"
 sqlalchemy = ">=2.0.31"
-toolz = "^0.12.1"
 openpyxl = "^3.1.5"
 pythonnet = "^3.0.3"
 duckdb = "^1.1.1"
 mysql-connector-python = "^9.0.0"
-risc-lasagna = "^2.0.0"
+# TODO replace with public package when distributed
+mcpf-core = { path="../mcpf-core", develop = true }
+mcpf-io = { path="../mcpf-io", develop = true }
+mcpf-io-pandas = { path="../mcpf-io-pandas", develop = true }
+mcpf-xform-pandas = { path="../mcpf-xform-pandas", develop = true }
+
 
 [tool.poetry.group.dev.dependencies]
+poethepoet = "^0.19.0"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 pytest-xdist = "^3.1.0"
@@ -77,12 +77,6 @@ test = "pytest"
 # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
 [tool.black]
 line-length = 120
-extend-exclude = """
-  (mcp_general_functions/mcp_general_db\\.py
-  |mcp_use_case_UPO/EQE_computations\\.py
-  |mcp_general_functions/mcp_general_transformations\\.py
-  |mcp_general_functions/mcp_general_io\\.py
-  )"""
 
 [build-system]
 requires = ["poetry-core>=1.1.14"]
