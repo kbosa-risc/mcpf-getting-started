@@ -1,6 +1,8 @@
 input_path: &base_dir '.'
 output_path: *base_dir
 
+imports:
+  - mcpf_io.pd
 pipeline_extension:
   - processing_files_p:
     - print_to_stdout: ~
