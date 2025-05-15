@@ -69,7 +69,7 @@ def create_test_env(data: dict[str, Any]) -> dict[str, Any]:
         random.seed(0)
         for current_dir in list_dir:
             os.makedirs(current_dir)
-            with open(current_dir + "\\test.csv", "w", newline="") as my_file:
+            with open(current_dir + "/test.csv", "w", newline="") as my_file:
                 wr = csv.writer(my_file)
                 wr.writerow(["a", "b", "c", "d", "e", "f"])
                 for _ in range(5):

@@ -1,4 +1,4 @@
-input_path: &base_dir '.\testDir'
+input_path: &base_dir './testDir'
 output_path: *base_dir
 entry_point: 'preprocessing_p'
 
