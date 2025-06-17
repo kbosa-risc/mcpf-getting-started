@@ -59,8 +59,8 @@ For this repository we only need to install `mcpf[io]` and `mcpf[xform]`
 
 ```sh
 # (Linux)
-poetry install "mcpf[io]"
-poetry install "mcpf[xform]"
+poetry add "mcpf[io]"
+poetry add "mcpf[xform]"
 ```
 
 ## Overview
