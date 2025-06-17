@@ -53,6 +53,7 @@ The Minimalistic Configurable Pipeline Framework (MCPF) is built on a modular st
 * `mcpf[db]`: Basic vendor-agnostic database functions.
 * `mcpf[postgres]`: Postgres-related database functions.
 * `mcpf[xform]`: Versatile transformation functions on Pandas dataframes.
+* `mcpf[xql]`: Query Pandas dataframes with an SQL-like language.
 
 For this repository we only need to install `mcpf[io]` and `mcpf[xform]`
 
