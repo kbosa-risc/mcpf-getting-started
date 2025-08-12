@@ -1,9 +1,29 @@
+# Minimalist Configurable Pipeline Framework (MCPF)
+
+Use this repository as a starting point for the MCPF pipelines.
+
+The Minimalist Configurable (Code) Pipeline Framework uses YAML configuration files which defines pipelines, where:
+* Each pipeline consists of a list of functions or other pipeline references that are called in the very order specified.
+* Each function is a pure python function that can be defined anywhere. It must match the pipeline function signature, and it must be reachable during pipeline execution (i.e. must be loadable via import).
+* Each function can have a distinct map of arguments specified along with it in the YAML confiuration file. These arguments are passed as meta data to the function.
+* A special loop command executes a specified pipeline as many times as there are loop elements.
+
+Use this repository as a starting point for your own MCPF pipelines. MCPF is built on a modular stack of pipeline functions. Many pipeline functions are provided by add-on packages to MCPF.
+* __mcpf-core__ contains the core functionality of the mcpf framework. Its source code is available in:
+	* [https://github.com/kbosa-risc/mcpf-core](https://github.com/kbosa-risc/mcpf-core)
+* __mcpf-docs__  presents some documentation and tutorial for developers. Its source code is available in
+	* [https://github.com/kbosa-risc/mcpf-docs](https://github.com/kbosa-risc/mcpf-docs)
+* __mcpf-io__ is for basic input/output functions like listing directories. Its source code is available in
+	* [https://github.com/kbosa-risc/mcpf-io](https://github.com/kbosa-risc/mcpf-io)
+	* [https://github.com/kbosa-risc/mcpf-io-pandas](https://github.com/kbosa-risc/mcpf-io-pandas)
+* __mcpf-xform__ provides versatile transformation functions on Pandas dataframes. Its source code is available in
+	* [https://github.com/kbosa-risc/mcpf-xform](https://github.com/kbosa-risc/mcpf-xform)
+ 	* [https://github.com/kbosa-risc/mcpf-xform-pandas](https://github.com/kbosa-risc/mcpf-xform-pandas)
+  	* [https://github.com/kbosa-risc/mcpf-xform-sq](https://github.com/kbosa-risc/mcpf-xform-sq)
 
 # Getting Started: Some simple Use Cases
 
 This repository provides some example configuration files for the Minimal Configurable Pipeline Framework along with custom functions and usage instructions.
-
-Use this repository as a starting point for your own MCPF pipelines.
 
 ## Prerequisites
 
@@ -47,15 +67,7 @@ To shut down the virtual environment simply close the console.
 
 ## Install dependencies
 
-The Minimalistic Configurable Pipeline Framework (MCPF) is built on a modular stack of pipeline functions. Many pipeline functions are provided by add-on packages to MCPF.
-
-* `mcpf[io]`: Basic input/output functions like listing directories.
-* `mcpf[db]`: Basic vendor-agnostic database functions.
-* `mcpf[postgres]`: Postgres-related database functions.
-* `mcpf[xform]`: Versatile transformation functions on Pandas dataframes.
-* `mcpf[xql]`: Query Pandas dataframes with an SQL-like language.
-
-For this repository we only need to install `mcpf[io]` and `mcpf[xform]`
+For this repository we only need to install `mcpf[io]` and `mcpf[xform]` (the core will be installed as a required dependency).
 
 ```sh
 # (Linux)
