@@ -19,7 +19,7 @@ Use this repository as a starting point for your own MCPF pipelines. MCPF is bui
 * __mcpf-xform__ provides versatile transformation functions on Pandas dataframes. Its source code is available in
 	* [https://github.com/kbosa-risc/mcpf-xform](https://github.com/kbosa-risc/mcpf-xform)
  	* [https://github.com/kbosa-risc/mcpf-xform-pandas](https://github.com/kbosa-risc/mcpf-xform-pandas)
-  	* [https://github.com/kbosa-risc/mcpf-xform-sq](https://github.com/kbosa-risc/mcpf-xform-sq)
+  	* [https://github.com/kbosa-risc/mcpf-xform-sql](https://github.com/kbosa-risc/mcpf-xform-sql)
 
 # Getting Started: Some simple Use Cases
 
