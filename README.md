@@ -21,7 +21,7 @@ Use this repository as a starting point for your own MCPF pipelines. MCPF is bui
  	* [https://github.com/kbosa-risc/mcpf-xform-pandas](https://github.com/kbosa-risc/mcpf-xform-pandas)
   	* [https://github.com/kbosa-risc/mcpf-xform-sql](https://github.com/kbosa-risc/mcpf-xform-sql)
 
-A preliminary version of a [DSL schema](https://github.com/kbosa-risc/mcpf-docs/dsl_schema/mcpf.schema.json) (in JSON format) is also provided and can be integrated into development environments such as Visual Studio Code or PyCharm. This enables syntax validation, auto-completion, and parameter hints during pipeline authoring. See the [README](https://github.com/kbosa-risc/mcpf-docs/dsl_schema/README) for details.
+A preliminary version of a [DSL schema](https://github.com/kbosa-risc/mcpf-docs/blob/P0-30/dsl_schema/mcpf.schema.json) (in JSON format) is also provided and can be integrated into development environments such as Visual Studio Code or PyCharm. This enables syntax validation, auto-completion, and parameter hints during pipeline authoring. See the [README]([https://github.com/kbosa-risc/mcpf-docs/dsl_schema/](https://github.com/kbosa-risc/mcpf-docs/blob/P0-30/dsl_schema/README) for details.
 
 # Getting Started: Some simple Use Cases
 
